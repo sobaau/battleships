@@ -1,0 +1,30 @@
+{
+  "name": "battleships",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack"
+  },
+  "keywords": [],
+  "author": "David Preston",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/d3": "^5.7.2",
+    "@types/react": "^16.8.23",
+    "@types/react-dom": "^16.8.5",
+    "css-loader": "^3.1.0",
+    "source-map-loader": "^0.2.4",
+    "ts-loader": "^6.0.4",
+    "tslint": "^5.18.0",
+    "typescript": "^3.5.3",
+    "webpack": "^4.38.0",
+    "webpack-cli": "^3.3.6"
+  },
+  "dependencies": {
+    "d3": "^5.9.7",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6"
+  }
+}

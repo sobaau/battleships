@@ -3,8 +3,7 @@ export class Board {
     public boardName: string;
         constructor(bn: string) {
             this.boardName = bn;
-            this.board = [100];
-            this.newBoard();
+            this.board = [];
     }
     public newBoard() {
         for (let i = 0; i < 100; i++) {

@@ -2,7 +2,7 @@ module.exports = {
     mode: "production",
     devtool: "source-map",
     resolve: {
-        extensions: [".ts", ".tsx"]
+        extensions: [".ts", ".tsx" ,".css",".js"]
     },
     entry:'./src/index.tsx',
     module: {
@@ -22,7 +22,7 @@ module.exports = {
                 loader: "source-map-loader"
             },
             {
-                test: /\.css$/i,
+                test: /\.css$/,
                 use: ['style-loader', 'css-loader'],
             }
         ]

@@ -109,21 +109,23 @@ export class PlayerArea {
         let dirc: string;
         const cellCheck = this.playerCells.filter((cell) => cell.part === this.currentShip.name);
         if (cellCheck[0].x === cellCheck[1].x) {
-                dirc = "h";
-        } else if (cellCheck[0].y === cellCheck[1].y) {
                 dirc = "v";
+        } else if (cellCheck[0].y === cellCheck[1].y) {
+                dirc = "h";
         }
         for (let i = 0, n = 1; i < cellCheck.length - 1; i++, n++) {
-            if( dirc = "h" ) {
+            if (dirc === "h" ) {
                 if (cellCheck[i].x + 50 === cellCheck[n].x ||
                     cellCheck[i].x - 50 === cellCheck[n].x ) {
                         continue;
                     }
+
                 this.clearInvalid();
                 return;
-            } else{
-                if (cellCheck[i].y + 50 === cellCheck[n].x ||
-                    cellCheck[i].y - 50 === cellCheck[n].x ) {
+            }
+            if (dirc === "v") {
+                if (cellCheck[i].y + 50 === cellCheck[n].y ||
+                    cellCheck[i].y - 50 === cellCheck[n].y ) {
                         continue;
                     }
                 this.clearInvalid();

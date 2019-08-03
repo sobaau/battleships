@@ -7,6 +7,7 @@ export class BoardCell  {
     public part: string;
     public owner: string;
     public hover = false;
+    public hit = false;
     constructor(x: number, y: number, o: string) {
         this.x = x;
         this.y = y;

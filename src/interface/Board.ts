@@ -12,3 +12,6 @@ export class Board {
         this.board[0 + 9 * 10] = 1;
     }
 }
+
+export const playerBoard = new Board("player");
+export const enemyBoard = new Board("enemy");

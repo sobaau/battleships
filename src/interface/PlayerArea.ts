@@ -1,50 +1,47 @@
-import { BoardCell } from "./BoardCell";
+import { string } from "prop-types";
 import { Board } from "./Board";
+import { BoardCell } from "./BoardCell";
 import { Button } from "./Button";
 import { Ship } from "./Ship";
-export class CanvasArea {
-    public angle = 0;
+
+export class PlayerArea {
+    public angle = 2;
     public canvas: HTMLCanvasElement;
     public ctx: any;
-    public width: number;
-    public height: number;
     public testCell: BoardCell;
     public playerBoard: Board;
     public enemyBoard: Board;
     private playerCells: BoardCell[];
-    private enemyCells: BoardCell[];
     private currentShip: Ship;
     private shipCells: BoardCell[] = [];
     private ships: Ship[];
-    private buttons: Button[]
-    private clicks = 0;
-    private ship = 0;
+    private clicks: number;
+    private ship: number;
     private gameState = "setup";
     constructor() {
-        this.canvas = document.getElementById("can") as HTMLCanvasElement;
+        this.canvas = document.getElementById("player") as HTMLCanvasElement;
         this.ctx = this.canvas.getContext("2d");
-        this.width = this.canvas.width;
-        this.height = this.canvas.height;
-        this.playerBoard = new Board("player");
-        this.enemyBoard = new Board("enemy");
-        this.enemyCells = new Array(100);
-        this.playerCells = new Array(100);
-        this.addCells(this.enemyCells, 100, 200, "enemy");
-        this.addCells(this.playerCells, 900, 200, "player");
         this.setEvents();
-        this.buttons = [];
         this.createShipList();
-        this.createButtons();
-        this.currentShip = this.ships[this.ship];
+        this.startGame();
     }
 
-    public draw(): void {
-        this.drawCells(this.enemyCells);
+    public draw() {
         this.drawCells(this.playerCells);
-        this.drawButtons();
         requestAnimationFrame(() => {
             this.draw();
         });
+    }
+    public startGame() {
+        console.log("start");
+        this.gameState = "setup";
+        this.ship = 0;
+        this.currentShip = this.ships[this.ship];
+        this.playerBoard = new Board("player");
+        this.enemyBoard = new Board("enemy");
+        this.playerCells = new Array(100);
+        this.addCells(this.playerCells, 0, 0, "player");
+        this.clicks = 0;
     }
 
     private drawCells(cells: BoardCell[]) {
@@ -52,13 +49,13 @@ export class CanvasArea {
             if (cell.part === "empty") {
                 this.ctx.fillStyle = cell.c;
                 this.ctx.fillRect(cell.x + 1, cell.y + 1, cell.w - 2, cell.w - 2);
-            } else if (cell.part != "empty") {
+            } else if (cell.part !== "empty") {
                 this.ships.forEach((ship) => {
-                    if (ship.name == cell.part) {
+                    if (ship.name === cell.part) {
                         this.ctx.fillStyle = ship.c;
                     }
-                })
-                this.ctx.fillRect(cell.x + 1, cell.y + 1, cell.w - 2, cell.w- 2)
+                });
+                this.ctx.fillRect(cell.x + 1, cell.y + 1, cell.w - 2, cell.w - 2);
             }
         });
 
@@ -76,8 +73,6 @@ export class CanvasArea {
         this.ships.push(cru);
         this.ships.push(sub);
         this.ships.push(dest);
-        console.log(this.ships);
-
     }
     private addCells(arr: BoardCell[], x: number, y: number, s: string) {
         for (let i = 0; i < 10; i++) {
@@ -91,80 +86,79 @@ export class CanvasArea {
         this.canvas.addEventListener("click", (event) => {
             const x = event.pageX - this.canvas.offsetLeft;
             const y = event.pageY - this.canvas.offsetTop;
-            if (this.gameState === 'setup') {
-                this.toggleCell(this.playerCells, x, y)
+            if (this.gameState === "setup") {
+                this.toggleCell(this.playerCells, x, y);
                 this.checkValid();
+                if (this.clicks === this.currentShip.size) {
+                    this.finalCheck();
+                }
                 this.checkShipTurn();
-            } else {
-                this.toggleCell(this.enemyCells, x, y)
             }
         });
 
         this.canvas.addEventListener("mousemove", (event) => {
             const x = event.pageX - this.canvas.offsetLeft;
             const y = event.pageY - this.canvas.offsetTop;
-            if (this.gameState === 'setup') {
+            // console.log(`${x}, ${y}`);
+            if (this.gameState === "setup") {
                 this.hoverEffect(this.playerCells, x, y);
-            } else {
-                this.hoverEffect(this.enemyCells, x, y);
             }
         });
-
-        this.canvas.addEventListener("mousedown", (event) => {
-
-        });
     }
-    private checkShipTurn() {
-        if (this.shipCells.length === this.currentShip.size) {
-            if (this.currentShip.name === "Destroyer") {
-                this.gameState = "playing"
-                this.playerBoard = new Board("player");
-                this.playerCells.forEach((cell)=>{
-                    if(cell.part == "empty"){
-                        this.playerBoard.board.push(0)
-                    }else if(cell.part == "Carrier"){
-                        this.playerBoard.board.push(1)
-                    }else if(cell.part == "Battleship"){
-                        this.playerBoard.board.push(2)
-                    }else if(cell.part == "Cruiser"){
-                        this.playerBoard.board.push(3)
-                    }else if(cell.part == "Submarine"){
-                        this.playerBoard.board.push(4)
-                    }else{
-                        this.playerBoard.board.push(5)
+    private finalCheck() {
+        let dirc: string;
+        const cellCheck = this.playerCells.filter((cell) => cell.part === this.currentShip.name);
+        if (cellCheck[0].x === cellCheck[1].x) {
+                dirc = "h";
+        } else if (cellCheck[0].y === cellCheck[1].y) {
+                dirc = "v";
+        }
+        for (let i = 0, n = 1; i < cellCheck.length - 1; i++, n++) {
+            if( dirc = "h" ) {
+                if (cellCheck[i].x + 50 === cellCheck[n].x ||
+                    cellCheck[i].x - 50 === cellCheck[n].x ) {
+                        continue;
                     }
-                });
-                console.log(this.playerBoard.board)
-            } else {
-                this.clicks = 0;
-                this.ship++
-                this.currentShip = this.ships[this.ship]
-                this.shipCells = [];
+                this.clearInvalid();
+                return;
+            } else{
+                if (cellCheck[i].y + 50 === cellCheck[n].x ||
+                    cellCheck[i].y - 50 === cellCheck[n].x ) {
+                        continue;
+                    }
+                this.clearInvalid();
+                return;
             }
         }
     }
-    private createButtons() {
-        const restBtn = new Button(30, 30, 20, 30, "Rest");
-        const shipBtn = new Button(900, 150, 110, 30, "Battleship")
-        this.buttons.push(shipBtn);
-    }
-    private drawButtons() {
-        this.buttons.forEach((b) => {
-            this.ctx.beginPath();
-            this.ctx.fillStyle = "gray";
-            this.ctx.fillRect(b.x, b.y - 30, b.w + 10, b.h + 30);
-            this.ctx.fillStyle = "black"
-            this.ctx.font = "20px Arial";
-            if(this.gameState === 'setup'){
-                this.ctx.fillText("Current ship:", b.x + 2, b.y - 10);
-                this.ctx.fillText(this.currentShip.name, b.x + 2, b.y + 23)
-            }else{
-                this.ctx.fillText("Current Player:", b.x + 2, b.y - 10);
-                this.ctx.fillText("test", b.x + 2, b.y + 23)
-            }
 
-            this.ctx.stroke();
-        })
+    private checkShipTurn() {
+        if (this.shipCells.length === this.currentShip.size) {
+            if (this.currentShip.name === "Destroyer") {
+                this.gameState = "playing";
+                this.playerBoard = new Board("player");
+                this.playerCells.forEach((cell) => {
+                    if (cell.part === "empty") {
+                        this.playerBoard.board.push(0);
+                    } else if (cell.part === "Carrier") {
+                        this.playerBoard.board.push(1);
+                    } else if (cell.part === "Battleship") {
+                        this.playerBoard.board.push(2);
+                    } else if (cell.part === "Cruiser") {
+                        this.playerBoard.board.push(3);
+                    } else if (cell.part === "Submarine") {
+                        this.playerBoard.board.push(4);
+                    } else {
+                        this.playerBoard.board.push(5);
+                    }
+                });
+            } else {
+                this.clicks = 0;
+                this.ship++;
+                this.currentShip = this.ships[this.ship];
+                this.shipCells = [];
+            }
+        }
     }
     private toggleCell(arr: BoardCell[], x: number, y: number) {
         if (this.gameState === "setup") {
@@ -176,31 +170,31 @@ export class CanvasArea {
                     console.log(this.shipCells);
                 }
             });
-        }else{
+        } else {
             arr.forEach((cell) => {
                 if (cell.contains(x, y) && this.clicks !== this.currentShip.size && cell.part === "empty") {
                     this.shipCells.push(cell);
                     cell.part = "enemy";
                     this.ctx.fillStyle = "red";
-                    this.ctx.fillRect(cell.x, cell.y, cell.w, cell.w)
+                    this.ctx.fillRect(cell.x, cell.y, cell.w, cell.w);
                     this.clicks++;
-                    console.log(this.shipCells);
                 }
             });
         }
 
     }
     private checkValid() {
-        if (!this.checkValidCell())
+        if (!this.checkValidCell()) {
             this.clearInvalid();
+        }
     }
     private clearInvalid() {
-        console.log('Invalid')
+        console.log("Invalid");
         this.playerCells.forEach((cell) => {
             if (cell.part === this.currentShip.name) {
                 cell.part = "empty";
             }
-        })
+        });
         this.shipCells = [];
         this.clicks = 0;
     }
@@ -211,25 +205,25 @@ export class CanvasArea {
 
         } else if (this.shipCells.length > 1) {
             if (this.shipCells[0].x === this.shipCells[1].x) {
-                dirc = "h"
+                dirc = "h";
             } else if (this.shipCells[0].y === this.shipCells[1].y) {
-                dirc = "v"
+                dirc = "v";
             } else {
                 return false;
             }
 
             for (let i = 0; i < this.shipCells.length; i++) {
-                console.log(this.shipCells[0].x + 50)
                 if (dirc == "h") {
                     if (this.shipCells[0].x !== this.shipCells[i].x) {
                         return false;
                     }
-                } else if (dirc == "v") {
+                } else if (dirc === "v") {
                     if (this.shipCells[0].y !== this.shipCells[i].y) {
                         return false;
                     }
                 }
             }
+
             return true;
         }
         return false;
@@ -237,12 +231,15 @@ export class CanvasArea {
 
     private hoverEffect(arr: BoardCell[], x: number, y: number) {
         arr.forEach((cell) => {
-            if (cell.contains(x, y) && cell.part == "empty") {
+            if (cell.contains(x, y) && cell.part === "empty") {
                 this.ctx.fillStyle = "white";
                 this.ctx.fillRect(cell.x, cell.y, cell.w, cell.w);
-            } else if (cell.part == "empty") {
+            } else if (cell.part === "empty") {
                 this.ctx.clearRect(cell.x, cell.y, cell.w, cell.w);
             }
         });
+    }
+    private exportBoard() {
+        return this.playerBoard;
     }
 }

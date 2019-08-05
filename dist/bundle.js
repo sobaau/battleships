@@ -710,6 +710,128 @@ module.exports = function (css) {
 
 /***/ }),
 
+/***/ "./src/components/Chat.tsx":
+/*!*********************************!*\
+  !*** ./src/components/Chat.tsx ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(/*! react */ "react");
+const ChatBox_1 = __webpack_require__(/*! ./ChatBox */ "./src/components/ChatBox.tsx");
+const ChatSend_1 = __webpack_require__(/*! ./ChatSend */ "./src/components/ChatSend.tsx");
+class Chat extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            messages: [{
+                    name: "David Preston",
+                    text: React.createElement("p", null, "Hello World!")
+                },
+                {
+                    name: "Random Name",
+                    text: React.createElement("p", null, "It works!")
+                },
+                {
+                    name: "Keeev",
+                    text: React.createElement("p", null, "Yay")
+                },
+                {
+                    name: "HotDog",
+                    text: React.createElement("p", null, "Test")
+                },
+            ],
+        };
+    }
+    render() {
+        console.log(this.state);
+        return (React.createElement("div", { id: "chat" },
+            React.createElement(ChatBox_1.ChatBox, { messages: this.state.messages }),
+            React.createElement(ChatSend_1.ChatSend, { sendMessage: this.sendMessage })));
+    }
+    sendMessage(text) {
+        /*
+        this.currentUser.sendMessage({
+            text,
+        });
+        */
+    }
+}
+exports.Chat = Chat;
+
+
+/***/ }),
+
+/***/ "./src/components/ChatBox.tsx":
+/*!************************************!*\
+  !*** ./src/components/ChatBox.tsx ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(/*! react */ "react");
+class ChatBox extends React.Component {
+    render() {
+        return (React.createElement("ul", { className: "message-list" }, this.props.messages.map((message, index) => {
+            return (React.createElement("li", { key: index, className: "message" },
+                React.createElement("div", null, message.name),
+                React.createElement("div", null, message.text)));
+        })));
+    }
+}
+exports.ChatBox = ChatBox;
+
+
+/***/ }),
+
+/***/ "./src/components/ChatSend.tsx":
+/*!*************************************!*\
+  !*** ./src/components/ChatSend.tsx ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(/*! react */ "react");
+class ChatSend extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            message: "",
+        };
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+    handleChange(e) {
+        this.setState({
+            message: e.target.value,
+        });
+    }
+    handleSubmit(e) {
+        e.preventDefault();
+        this.props.sendMessage(this.state.message);
+        this.setState({
+            message: "",
+        });
+    }
+    render() {
+        return (React.createElement("form", { onSubmit: this.handleSubmit, className: "send-box" },
+            React.createElement("input", { onChange: this.handleChange, value: this.state.message, placeholder: "Type your message and hit ENTER", type: "text" })));
+    }
+}
+exports.ChatSend = ChatSend;
+
+
+/***/ }),
+
 /***/ "./src/components/EnemyCanvas.tsx":
 /*!****************************************!*\
   !*** ./src/components/EnemyCanvas.tsx ***!
@@ -723,11 +845,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(/*! react */ "react");
 const Board_1 = __webpack_require__(/*! ../interface/Board */ "./src/interface/Board.ts");
 const BoardCell_1 = __webpack_require__(/*! ../interface/BoardCell */ "./src/interface/BoardCell.ts");
-const GameState = {
-    Setup: 0,
-    Playing: 1,
-    GameOver: 2,
-};
+const PlayArea_1 = __webpack_require__(/*! ./PlayArea */ "./src/components/PlayArea.tsx");
 class EnemyCanvas extends React.Component {
     constructor(props) {
         super(props);
@@ -736,13 +854,14 @@ class EnemyCanvas extends React.Component {
         this.width = 510;
         this.canvasRef = React.createRef();
         this.state = {
-            GameState: GameState.Setup,
+            GameStatus: props.GameState.GameStatus,
+            CurrentTurn: props.GameState.CurrentTurn,
             screen: {
                 width: this.width,
                 height: this.height,
             },
+            ctx: null,
         };
-        this.handleClick = this.handleClick.bind(this);
         this.enemyBoard = new Board_1.Board("enemy");
         this.enemyCells = new Array(100);
         this.enemyCells = this.addCells(0, 0, "enemy");
@@ -750,6 +869,8 @@ class EnemyCanvas extends React.Component {
         this.setTempBoard();
     }
     render() {
+        console.log("Props in E ");
+        console.log(this.props);
         return (React.createElement("div", null,
             React.createElement("canvas", { id: "enemyC", ref: this.canvasRef, width: "510", height: "510" })));
     }
@@ -761,6 +882,11 @@ class EnemyCanvas extends React.Component {
         requestAnimationFrame(() => { this.update(); });
     }
     update() {
+        if (this.props.GameState.ResE) {
+            this.startGame();
+            this.props.GameState.ResE = false;
+            this.props.update(this.props.GameState);
+        }
         this.drawCells(this.enemyCells);
         this.checkStatus();
         requestAnimationFrame(() => {
@@ -770,17 +896,17 @@ class EnemyCanvas extends React.Component {
     checkStatus() {
         if (this.shipsRemaining === 0) {
             console.log("Player Wins!");
+            this.props.GameState.GameStatus = 3;
+            this.props.GameState.LastMove = "Player Wins!";
+            this.props.update(this.props.GameState);
         }
-    }
-    handleClick() {
-        this.startGame();
     }
     setEvents() {
         const canvas = this.canvasRef.current;
         canvas.addEventListener("click", (event) => {
             const x = event.pageX - canvas.offsetLeft;
             const y = event.pageY - canvas.offsetTop;
-            if (this.state.GameState === 0) {
+            if (this.props.GameState.GameStatus === 1 && this.props.GameState.CurrentTurn === "Player") {
                 this.toggleCell(this.enemyCells, x, y);
             }
         });
@@ -788,15 +914,15 @@ class EnemyCanvas extends React.Component {
             const x = event.pageX - canvas.offsetLeft;
             const y = event.pageY - canvas.offsetTop;
             // console.log(`${x}, ${y}`);
-            if (this.state.GameState === 0 && this.state.gameState !== 2) {
+            if (this.props.GameState.GameStatus === 1) {
                 this.hoverEffect(this.enemyCells, x, y);
             }
         });
     }
     startGame() {
-        console.log("start");
+        console.log("start in enm");
         this.setState({
-            GameState: GameState.Setup,
+            GameStatus: PlayArea_1.GameStatus.Setup,
         });
         this.enemyBoard = new Board_1.Board("enemy");
         this.enemyCells = new Array(100);
@@ -826,28 +952,33 @@ class EnemyCanvas extends React.Component {
                 if (cell.part !== "empty" && !cell.hit) {
                     cell.c = "red";
                     this.lastMoveResult = "Hit!";
-                    this.props.gameStatus.GameStatus.LastMove = "Hit!";
-                    this.props.update(this.props.gameStatus.GameStatus);
+                    this.props.GameState.LastMove = "Hit!";
+                    this.props.update(this.props.GameState);
                     cell.hit = true;
                     this.shipCount.set(cell.part, this.shipCount.get(cell.part) - 1);
                     if (this.shipCount.get(cell.part) === 0) {
                         console.log(`${cell.part} Was sunk`);
-                        this.props.gameStatus.GameStatus.LastMove = `Hit! Enemy ${cell.part} was sunk`;
-                        this.props.update(this.props.gameStatus.GameStatus);
+                        this.props.GameState.LastMove = `Hit! Enemy ${cell.part} was sunk`;
                         this.shipsRemaining--;
                         console.log(this.shipsRemaining);
                         if (this.shipsRemaining === 0) {
                             this.setState({
-                                GameState: GameState.GameOver,
+                                GameStatus: PlayArea_1.GameStatus.GameOver,
                             });
+                            this.props.GameState.GameStatus = PlayArea_1.GameStatus.GameOver;
                         }
+                        this.props.update(this.props.GameState);
                     }
+                    this.props.GameState.CurrentTurn = "Enemy";
+                    this.props.update(this.props.GameState);
                 }
-                else if (cell.part === "empty") {
+                else if (cell.part === "empty" && !cell.hit) {
                     cell.c = "white";
-                    this.props.gameStatus.GameStatus.LastMove = "Miss!";
-                    this.props.update(this.props.gameStatus.GameStatus);
+                    this.props.GameState.LastMove = "Miss!";
+                    this.props.update(this.props.GameState);
                     cell.hit = true;
+                    this.props.GameState.CurrentTurn = "Enemy";
+                    this.props.update(this.props.GameState);
                 }
             }
         });
@@ -922,30 +1053,45 @@ const React = __webpack_require__(/*! react */ "react");
 const EnemyCanvas_1 = __webpack_require__(/*! ./EnemyCanvas */ "./src/components/EnemyCanvas.tsx");
 const PlayerCanvas_1 = __webpack_require__(/*! ./PlayerCanvas */ "./src/components/PlayerCanvas.tsx");
 const StatusArea_1 = __webpack_require__(/*! ./StatusArea */ "./src/components/StatusArea.tsx");
+var GameStatus;
+(function (GameStatus) {
+    GameStatus[GameStatus["Setup"] = 0] = "Setup";
+    GameStatus[GameStatus["Playing"] = 1] = "Playing";
+    GameStatus[GameStatus["GameOver"] = 2] = "GameOver";
+})(GameStatus = exports.GameStatus || (exports.GameStatus = {}));
 class PlayArea extends React.Component {
     constructor(props) {
         super(props);
         this.handle = (dataFromChild) => {
-            this.setState({ GameStatus: dataFromChild });
+            this.setState({ GameState: dataFromChild });
+        };
+        this.handleClick = () => {
+            this.setState((prevState) => {
+                let GameState = Object.assign({}, prevState.GameState);
+                GameState.ResE = true;
+                GameState.ResP = true;
+                return { GameState };
+            });
         };
         this.state = {
-            GameStatus: {
+            GameState: {
                 CurrentShip: null,
                 CurrentTurn: null,
                 LastMove: null,
-                GameState: null,
-            }
+                GameStatus: GameStatus.Setup,
+                ResE: false,
+                ResP: false,
+            },
         };
-        this.handleSomething = this.handleSomething.bind(this);
     }
     render() {
+        console.log("Game State in PlayA");
+        console.log(this.state);
         return (React.createElement("div", null,
-            React.createElement(PlayerCanvas_1.PlayerCanvas, { update: this.handle, gameStatus: this.state }),
-            React.createElement(StatusArea_1.StatusArea, { gameStatus: this.state.GameStatus }),
-            React.createElement(EnemyCanvas_1.EnemyCanvas, { update: this.handle, gameStatus: this.state })));
-    }
-    handleSomething(message) {
-        this.setState({});
+            React.createElement(PlayerCanvas_1.PlayerCanvas, { update: this.handle, GameState: this.state.GameState }),
+            React.createElement("button", { onClick: this.handleClick }, "Rest"),
+            React.createElement(StatusArea_1.StatusArea, { GameState: this.state.GameState }),
+            React.createElement(EnemyCanvas_1.EnemyCanvas, { update: this.handle, GameState: this.state.GameState })));
     }
 }
 exports.PlayArea = PlayArea;
@@ -967,11 +1113,7 @@ const React = __webpack_require__(/*! react */ "react");
 const Board_1 = __webpack_require__(/*! ../interface/Board */ "./src/interface/Board.ts");
 const BoardCell_1 = __webpack_require__(/*! ../interface/BoardCell */ "./src/interface/BoardCell.ts");
 const Ship_1 = __webpack_require__(/*! ../interface/Ship */ "./src/interface/Ship.ts");
-const GameState = {
-    Setup: 0,
-    Playing: 1,
-    GameOver: 2,
-};
+const PlayArea_1 = __webpack_require__(/*! ./PlayArea */ "./src/components/PlayArea.tsx");
 class PlayerCanvas extends React.Component {
     constructor(props) {
         super(props);
@@ -980,14 +1122,21 @@ class PlayerCanvas extends React.Component {
         this.width = 510;
         this.canvasRef = React.createRef();
         this.state = {
-            GameState: GameState.Setup,
+            CurrentShip: "Carrier",
+            GameStatus: props.GameState.GameStatus,
+            ShipRemaining: 5,
+            ShipParts: {
+                Carrier: 5,
+                Battleship: 4,
+                Cruiser: 3,
+                Submarine: 3,
+                Destroyer: 2,
+            },
             screen: {
                 width: this.width,
                 height: this.height,
             },
-            CurrentShip: "Carrier",
         };
-        this.handleClick = this.handleClick.bind(this);
         this.ships = this.createShipList();
         this.playerBoard = new Board_1.Board("player");
         this.enemyBoard = new Board_1.Board("enemy");
@@ -996,9 +1145,11 @@ class PlayerCanvas extends React.Component {
         this.ship = 0;
     }
     render() {
+        console.log("Props in PC ");
+        console.log(this.props);
+        console.log(this.state);
         return (React.createElement("div", null,
-            React.createElement("canvas", { id: "playerC", ref: this.canvasRef, width: "510", height: "510" }),
-            React.createElement("button", { onClick: this.handleClick }, "Rest")));
+            React.createElement("canvas", { id: "playerC", ref: this.canvasRef, width: "510", height: "510" })));
     }
     componentDidMount() {
         const ctx = this.canvasRef.current.getContext("2d");
@@ -1010,7 +1161,7 @@ class PlayerCanvas extends React.Component {
     startGame() {
         console.log("start");
         this.setState({
-            GameState: GameState.Setup,
+            GameStatus: PlayArea_1.GameStatus.Setup,
         });
         this.ship = 0;
         this.currentShip = this.ships[this.ship];
@@ -1018,25 +1169,128 @@ class PlayerCanvas extends React.Component {
         this.enemyBoard = new Board_1.Board("enemy");
         this.playerCells = this.addCells(0, 0, "player");
         this.clicks = 0;
-        console.log(this.props.gameStatus.GameStatus);
-        this.props.gameStatus.GameStatus.CurrentShip = "Carrier";
-        this.props.update(this.props.gameStatus.GameStatus);
+        console.log(this.props.GameState.GameStatus);
+        this.props.GameState.CurrentShip = "Carrier";
+        this.props.update(this.props.GameState);
+        this.setState((prevState) => {
+            let ShipParts = Object.assign({}, prevState.ShipParts);
+            ShipParts.Carrier = 5;
+            ShipParts.Battleship = 4;
+            ShipParts.Cruiser = 3;
+            ShipParts.Submarine = 3;
+            ShipParts.Destroyer = 2;
+            return { ShipParts };
+        });
+        this.setState({ ShipRemaining: 5 });
     }
     update() {
         this.drawCells(this.playerCells);
+        if (this.props.GameState.ResP) {
+            this.startGame();
+            this.props.GameState.ResP = false;
+            this.props.update(this.props.GameState);
+        }
+        if (this.props.GameState.GameStatus === 1 && this.props.GameState.CurrentTurn === "Enemy") {
+            this.playGame();
+        }
+        if (this.state.GameStatus === 2) {
+            // #TODO ENDGAME
+        }
         requestAnimationFrame(() => {
             this.update();
         });
     }
-    handleClick() {
-        this.startGame();
+    checkRemainingShips() {
+        this.setState({
+            ShipRemaining: this.state.ShipRemaining - 1,
+        });
+        if (this.state.ShipRemaining === 0) {
+            this.props.GameState.LastMove = "Enemy Wins!";
+            this.props.GameState.GameStatus = PlayArea_1.GameStatus.GameOver;
+            this.props.update(this.props.GameState);
+        }
+    }
+    playGame() {
+        const randomCell = Math.floor(Math.random() * (99 - 0 + 1)) + 0;
+        const cell = this.playerCells[randomCell];
+        if (cell.part !== "empty" && !cell.hit) {
+            if (cell.part === "Carrier") {
+                this.setState((prevState) => {
+                    let ShipParts = Object.assign({}, prevState.ShipParts);
+                    ShipParts.Carrier--;
+                    return { ShipParts };
+                });
+                if (this.state.ShipParts.Carrier === 0) {
+                    this.checkRemainingShips();
+                }
+            }
+            else if (cell.part === "Battleship") {
+                this.setState((prevState) => {
+                    let ShipParts = Object.assign({}, prevState.ShipParts);
+                    ShipParts.Battleship--;
+                    return { ShipParts };
+                });
+                if (this.state.ShipParts.Battleship === 0) {
+                    this.checkRemainingShips();
+                }
+            }
+            else if (cell.part === "Cruiser") {
+                this.setState((prevState) => {
+                    let ShipParts = Object.assign({}, prevState.ShipParts);
+                    ShipParts.Cruiser--;
+                    return { ShipParts };
+                });
+                if (this.state.ShipParts.Cruiser === 0) {
+                    this.checkRemainingShips();
+                }
+            }
+            else if (cell.part === "Submarine") {
+                this.setState((prevState) => {
+                    let ShipParts = Object.assign({}, prevState.ShipParts);
+                    ShipParts.Submarine--;
+                    return { ShipParts };
+                });
+                if (this.state.ShipParts.Submarine === 0) {
+                    this.checkRemainingShips();
+                }
+            }
+            else {
+                this.setState((prevState) => {
+                    let ShipParts = Object.assign({}, prevState.ShipParts);
+                    ShipParts.Destroyer--;
+                    return { ShipParts };
+                });
+                if (this.state.ShipParts.Destroyer === 0) {
+                    this.checkRemainingShips();
+                }
+            }
+            this.playerCells[randomCell].hit = true;
+            this.playerCells[randomCell].c = "red";
+            this.playerCells[randomCell].part = "empty"; // #TODO: Fix this up.
+            this.props.GameState.CurrentTurn = "Player";
+            this.props.GameState.LastMove = "Enemy Hit!";
+            this.props.update(this.props.GameState);
+        }
+        else if (cell.part === "empty" && !cell.hit) {
+            this.playerCells[randomCell].hit = true;
+            this.playerCells[randomCell].c = "white";
+            this.playerCells[randomCell].part = "empty"; // #TODO: Fix this up.
+            this.props.GameState.CurrentTurn = "Player";
+            this.props.GameState.LastMove = "Enemy Missed!";
+            this.props.update(this.props.GameState);
+        }
+        else {
+            this.playGame();
+        }
+    }
+    endGame() {
     }
     setEvents() {
         const canvas = this.canvasRef.current;
         canvas.addEventListener("click", (event) => {
             const x = event.pageX - canvas.offsetLeft;
             const y = event.pageY - canvas.offsetTop;
-            if (this.state.GameState === 0) {
+            if (this.state.GameStatus === 0) {
                 this.toggleCell(this.playerCells, x, y);
                 this.checkValid();
                 if (this.clicks === this.currentShip.size) {
@@ -1049,14 +1303,14 @@ class PlayerCanvas extends React.Component {
             const x = event.pageX - canvas.offsetLeft;
             const y = event.pageY - canvas.offsetTop;
             // console.log(`${x}, ${y}`);
-            if (this.state.GameState === 0) {
+            if (this.state.GameStatus === 0) {
                 this.hoverEffect(this.playerCells, x, y);
             }
         });
     }
     updateCurrentShip() {
-        this.props.gameStatus.GameStatus.CurrentShip = this.state.CurrentShip;
-        this.props.update(this.props.gameStatus.GameStatus);
+        this.props.GameState.CurrentShip = this.state.CurrentShip;
+        this.props.update(this.props.GameState);
     }
     createShipList() {
         const ships = [];
@@ -1130,7 +1384,10 @@ class PlayerCanvas extends React.Component {
     checkShipTurn() {
         if (this.shipCells.length === this.currentShip.size) {
             if (this.currentShip.name === "Destroyer") {
-                this.setState({ GameState: GameState.Playing });
+                this.setState({ GameStatus: PlayArea_1.GameStatus.Playing });
+                this.props.GameState.GameStatus = this.state.GameStatus;
+                this.props.GameState.CurrentTurn = "Player";
+                this.props.update(this.props.GameState);
                 this.playerBoard = new Board_1.Board("player");
                 this.playerCells.forEach((cell) => {
                     if (cell.part === "empty") {
@@ -1166,7 +1423,7 @@ class PlayerCanvas extends React.Component {
     }
     toggleCell(arr, x, y) {
         const ctx = this.state.ctx;
-        if (this.state.GameState === 0) {
+        if (this.state.GameStatus === 0) {
             arr.forEach((cell) => {
                 if (cell.contains(x, y) && this.clicks !== this.currentShip.size && cell.part === "empty") {
                     this.shipCells.push(cell);
@@ -1268,43 +1525,46 @@ const React = __webpack_require__(/*! react */ "react");
 class StatusArea extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            GameState: props.GameState,
+        };
     }
     render() {
-        console.log(this.props);
-        return (React.createElement("div", null,
-            React.createElement("p", null, "Is anything here???????"),
-            ";",
-            React.createElement("p", null,
-                "Currently Placing eee: ",
-                this.props.gameStatus.CurrentShip)));
+        console.log(`Props in SA ${this.props}`);
+        console.log(`State in SA ${this.state}`);
+        return (React.createElement(PlayingGame, { GameState: this.props.GameState }));
     }
 }
 exports.StatusArea = StatusArea;
-
-
-/***/ }),
-
-/***/ "./src/components/chat.tsx":
-/*!*********************************!*\
-  !*** ./src/components/chat.tsx ***!
-  \*********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(/*! react */ "react");
-class ChatBox extends React.Component {
-    constructor(props) {
-        super(props);
+function PlayingGame(props) {
+    if (props.GameState.GameStatus === 0) {
+        return React.createElement(SetupStatus, { GameState: props.GameState });
     }
-    render() {
-        return (React.createElement("div", null, "This is the chat area?"));
+    else {
+        return (React.createElement("div", null,
+            React.createElement(LastMoveStatus, { GameState: props.GameState }),
+            React.createElement(CurrentTurn, { GameState: props.GameState })));
     }
 }
-exports.ChatBox = ChatBox;
+exports.PlayingGame = PlayingGame;
+const SetupStatus = (props) => {
+    return React.createElement("div", null,
+        "Currently Placing: ",
+        props.GameState.CurrentShip);
+};
+function LastMoveStatus(props) {
+    return React.createElement("div", null,
+        "Last Move: ",
+        props.GameState.LastMove);
+}
+exports.LastMoveStatus = LastMoveStatus;
+function CurrentTurn(props) {
+    return React.createElement("div", null,
+        "Currently ",
+        props.GameState.CurrentTurn,
+        "'s turn.");
+}
+exports.CurrentTurn = CurrentTurn;
 
 
 /***/ }),
@@ -1321,12 +1581,12 @@ exports.ChatBox = ChatBox;
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(/*! react */ "react");
 const ReactDOM = __webpack_require__(/*! react-dom */ "react-dom");
-const chat_1 = __webpack_require__(/*! ./components/chat */ "./src/components/chat.tsx");
 __webpack_require__(/*! ./styles/app.scss */ "./src/styles/app.scss");
 const PlayArea_1 = __webpack_require__(/*! ./components/PlayArea */ "./src/components/PlayArea.tsx");
+const Chat_1 = __webpack_require__(/*! ./components/Chat */ "./src/components/Chat.tsx");
 ReactDOM.render(React.createElement("div", null,
     React.createElement(PlayArea_1.PlayArea, null),
-    React.createElement(chat_1.ChatBox, null)), document.getElementById("app"));
+    React.createElement(Chat_1.Chat, null)), document.getElementById("app"));
 
 
 /***/ }),
@@ -1345,12 +1605,6 @@ class Board {
     constructor(bn) {
         this.boardName = bn;
         this.board = [];
-    }
-    newBoard() {
-        for (let i = 0; i < 100; i++) {
-            this.board[i] = 0;
-        }
-        this.board[0 + 9 * 10] = 1;
     }
 }
 exports.Board = Board;
@@ -1463,4 +1717,4 @@ module.exports = ReactDOM;
 /***/ })
 
 /******/ });
-//# sourceMappingURL=main.js.map
+//# sourceMappingURL=bundle.js.map

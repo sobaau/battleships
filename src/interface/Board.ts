@@ -5,13 +5,4 @@ export class Board {
             this.boardName = bn;
             this.board = [];
     }
-    public newBoard() {
-        for (let i = 0; i < 100; i++) {
-            this.board[i] = 0;
-        }
-        this.board[0 + 9 * 10] = 1;
-    }
 }
-
-export const playerBoard = new Board("player");
-export const enemyBoard = new Board("enemy");

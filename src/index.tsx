@@ -1,11 +1,12 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import {Canvas} from "./components/canvas";
-import {ChatBox} from "./components/chat";
-import "./styles/app.css";
+import {ChatBox} from "./components/ChatBox";
+import "./styles/app.scss";
+import { PlayArea } from "./components/PlayArea";
+import { Chat } from "./components/Chat";
 
 ReactDOM.render(
     <div>
-        <Canvas />
-        <ChatBox />
+        <PlayArea />
+        <Chat />
     </div>, document.getElementById("app"));

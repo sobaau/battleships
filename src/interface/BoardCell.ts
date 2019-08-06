@@ -1,4 +1,4 @@
-export class BoardCell  {
+export class BoardCell {
     public x: number;
     public y: number;
     public h: number;

@@ -30,7 +30,7 @@ export class Chat extends React.Component<any, any> {
         return (
             <div id="chat">
                 <ChatBox messages={this.state.messages} />
-                <ChatSend sendMessage={this.sendMessage}/>
+                <ChatSend sendMessage={this.sendMessage} />
             </div>
         );
     }

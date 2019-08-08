@@ -1,7 +1,8 @@
+/*
 import * as React from "react";
 
 interface IPlayerDetailsProps {
-    details?:() => void;
+    details?: any;
 }
 
 const PlayerDetails: React.FunctionComponent<any> = (props) => {
@@ -20,3 +21,4 @@ const NameBox: React.FunctionComponent<INameBoxProps> = (props) => {
 };
 
 
+*/

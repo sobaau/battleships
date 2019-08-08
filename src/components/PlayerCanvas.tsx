@@ -66,7 +66,8 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
         console.log(this.state);
         return (
             <div>
-                <canvas id="playerC" ref={this.canvasRef} width="510" height="510" />
+                <canvas id="playerC" ref={this.canvasRef}
+                width={this.state.screen.width} height={this.state.screen.height} />
             </div>
         );
     }
@@ -374,6 +375,8 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
     }
     private clearInvalid() {
         console.log("Invalid");
+        this.props.GameState.SetupMessages = "Invalid Ship Placement",
+        this.props.updateGameState(this.props.GameState);
         this.playerCells.forEach((cell) => {
             if (cell.part === this.currentShip.name) {
                 cell.part = "empty";

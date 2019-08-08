@@ -12,7 +12,10 @@ module.exports = {
     entry: './src/index.tsx',
     output:{
         filename: 'bundle.js',
-        publicPath: "./src/"
+    },
+    devServer: {
+        contentBase: path.join(__dirname, 'dist'),
+
     },
     plugins: [
         new MiniCssExtractPlugin({

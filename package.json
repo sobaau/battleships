@@ -5,10 +5,9 @@
   "main": "index.tsx",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack -d && cp ./index.html dist/index.html && webpack-dev-server --content-base src/ --inline --hot",
-    "build:prod": "webpack -d && cp ./index.html dist/index.html",
+    "build": "webpack",
     "watch": "webpack --watch",
-    "start": "npm run build"
+    "start": "webpack-dev-server --content-base dist --inline --hot"
   },
   "keywords": [],
   "author": "David Preston",

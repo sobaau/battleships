@@ -14,6 +14,7 @@ export interface IGameState {
         Winner: string;
         EnemyShipsR: number;
         PlayerShipsR: number;
+        SetupMessages: string;
 }
 export interface IGameProp {
     GameState: IGameState;

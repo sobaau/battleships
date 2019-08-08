@@ -77,7 +77,7 @@
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
 /******/
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "./src/";
+/******/ 	__webpack_require__.p = "";
 /******/
 /******/
 /******/ 	// Load entry module and return exports
@@ -721,8 +721,8 @@ module.exports = function (css) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(/*! react */ "react");
-const PlayArea_1 = __webpack_require__(/*! ./PlayArea */ "./src/components/PlayArea.tsx");
 const Chat_1 = __webpack_require__(/*! ./Chat */ "./src/components/Chat.tsx");
+const PlayArea_1 = __webpack_require__(/*! ./PlayArea */ "./src/components/PlayArea.tsx");
 class App extends React.Component {
     constructor() {
         super(...arguments);
@@ -1153,6 +1153,7 @@ class PlayArea extends React.Component {
                 EnemyName: this.props.Players.EnemyName,
                 EnemyShipsR: 5,
                 PlayerShipsR: 5,
+                SetupMessages: null,
             },
         };
     }
@@ -1221,7 +1222,7 @@ class PlayerCanvas extends React.Component {
         console.log(this.props);
         console.log(this.state);
         return (React.createElement("div", null,
-            React.createElement("canvas", { id: "playerC", ref: this.canvasRef, width: "510", height: "510" })));
+            React.createElement("canvas", { id: "playerC", ref: this.canvasRef, width: this.state.screen.width, height: this.state.screen.height })));
     }
     componentDidMount() {
         const ctx = this.canvasRef.current.getContext("2d");
@@ -1531,6 +1532,8 @@ class PlayerCanvas extends React.Component {
     }
     clearInvalid() {
         console.log("Invalid");
+        this.props.GameState.SetupMessages = "Invalid Ship Placement",
+            this.props.updateGameState(this.props.GameState);
         this.playerCells.forEach((cell) => {
             if (cell.part === this.currentShip.name) {
                 cell.part = "empty";

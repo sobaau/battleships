@@ -26,7 +26,7 @@ export class PlayArea extends React.Component<IPlayAreaProp, IGameProp> {
                 EnemyName: this.props.Players.EnemyName,
                 EnemyShipsR: 5,
                 PlayerShipsR: 5,
-
+                SetupMessages: null,
             },
         };
     }

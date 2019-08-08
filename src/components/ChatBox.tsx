@@ -13,7 +13,7 @@ export class ChatBox extends React.Component<IChatProps, any>{
                     <div>{message.name}</div>
                     <div>{message.text}</div>
                   </li>
-                )
+                );
             })}
         </ul>
     )

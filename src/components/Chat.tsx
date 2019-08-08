@@ -8,7 +8,7 @@ export class Chat extends React.Component<any, any> {
         this.state = {
             messages: [{
                 name: "David Preston",
-                text: <p>Hello World!</p>
+                text: <p>Hello World!</p>,
             },
             {
                 name: "Random Name",
@@ -26,7 +26,7 @@ export class Chat extends React.Component<any, any> {
         };
     }
     public render() {
-        console.log(this.state)
+        console.log(this.state);
         return (
             <div id="chat">
                 <ChatBox messages={this.state.messages} />

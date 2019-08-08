@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Board } from "../interface/Board";
 import { BoardCell } from "../interface/BoardCell";
-import { ICanvas } from "../interface/IGameProp";
+import { ICanvas, IMoveListItem } from "../interface/IGameProp";
 import { Ship } from "../interface/Ship";
 import { GameStatus } from "./PlayArea";
 
@@ -91,9 +91,9 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
         this.clicks = 0;
         console.log(this.props.GameState.GameStatus);
         this.props.GameState.CurrentShip = "Carrier";
-        this.props.update(this.props.GameState);
+        this.props.updateGameState(this.props.GameState);
         this.setState((prevState) => {
-            let ShipParts = { ...prevState.ShipParts };
+            const ShipParts = { ...prevState.ShipParts };
             ShipParts.Carrier = 5;
             ShipParts.Battleship = 4;
             ShipParts.Cruiser = 3;
@@ -109,7 +109,7 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
         if (this.props.GameState.ResP) {
             this.startGame();
             this.props.GameState.ResP = false;
-            this.props.update(this.props.GameState);
+            this.props.updateGameState(this.props.GameState);
         }
         if (this.props.GameState.GameStatus === 1 && this.props.GameState.CurrentTurn === "Enemy") {
             this.playGame();
@@ -126,9 +126,9 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
             ShipRemaining: this.state.ShipRemaining - 1,
         });
         if (this.state.ShipRemaining === 0) {
-            this.props.GameState.LastMove = "Enemy Wins!";
+            this.props.GameState.Winner = "Enemy Wins!";
             this.props.GameState.GameStatus = GameStatus.GameOver;
-            this.props.update(this.props.GameState);
+            this.props.updateGameState(this.props.GameState);
         }
     }
     private playGame() {
@@ -137,7 +137,7 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
         if (cell.part !== "empty" && !cell.hit) {
             if (cell.part === "Carrier") {
                 this.setState((prevState) => {
-                    let ShipParts = { ...prevState.ShipParts };
+                    const ShipParts = { ...prevState.ShipParts };
                     ShipParts.Carrier--;
                     return { ShipParts };
                 });
@@ -146,7 +146,7 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
                 }
             } else if (cell.part === "Battleship") {
                 this.setState((prevState) => {
-                    let ShipParts = { ...prevState.ShipParts };
+                    const ShipParts = { ...prevState.ShipParts };
                     ShipParts.Battleship--;
                     return { ShipParts };
                 });
@@ -155,7 +155,7 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
                 }
             } else if (cell.part === "Cruiser") {
                 this.setState((prevState) => {
-                    let ShipParts = { ...prevState.ShipParts };
+                    const ShipParts = { ...prevState.ShipParts };
                     ShipParts.Cruiser--;
                     return { ShipParts };
                 });
@@ -164,7 +164,7 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
                 }
             } else if (cell.part === "Submarine") {
                 this.setState((prevState) => {
-                    let ShipParts = { ...prevState.ShipParts };
+                    const ShipParts = { ...prevState.ShipParts };
                     ShipParts.Submarine--;
                     return { ShipParts };
                 });
@@ -173,7 +173,7 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
                 }
             } else {
                 this.setState((prevState) => {
-                    let ShipParts = { ...prevState.ShipParts };
+                    const ShipParts = { ...prevState.ShipParts };
                     ShipParts.Destroyer--;
                     return { ShipParts };
                 });
@@ -185,15 +185,23 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
             this.playerCells[randomCell].c = "red";
             this.playerCells[randomCell].part = "empty"; // #TODO: Fix this up.
             this.props.GameState.CurrentTurn = "Player";
-            this.props.GameState.LastMove = "Enemy Hit!";
-            this.props.update(this.props.GameState);
+            const move: IMoveListItem = {
+                Player: "Enemy",
+                Move: "Hit!",
+            };
+            this.props.updateMoves(move);
+            this.props.updateGameState(this.props.GameState);
         } else if (cell.part === "empty" && !cell.hit) {
             this.playerCells[randomCell].hit = true;
             this.playerCells[randomCell].c = "white";
             this.playerCells[randomCell].part = "empty"; // #TODO: Fix this up.
             this.props.GameState.CurrentTurn = "Player";
-            this.props.GameState.LastMove = "Enemy Missed!";
-            this.props.update(this.props.GameState);
+            const move: IMoveListItem = {
+                Player: "Enemy",
+                Move: "Miss!",
+            };
+            this.props.updateMoves(move);
+            this.props.updateGameState(this.props.GameState);
         } else {
             this.playGame();
         }
@@ -229,7 +237,7 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
     }
     private updateCurrentShip() {
         this.props.GameState.CurrentShip = this.state.CurrentShip;
-        this.props.update(this.props.GameState);
+        this.props.updateGameState(this.props.GameState);
     }
     private createShipList(): Ship[] {
         const ships = [];
@@ -308,7 +316,7 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
                 this.setState({ GameStatus: GameStatus.Playing });
                 this.props.GameState.GameStatus = this.state.GameStatus;
                 this.props.GameState.CurrentTurn = "Player";
-                this.props.update(this.props.GameState);
+                this.props.updateGameState(this.props.GameState);
                 this.playerBoard = new Board("player");
                 this.playerCells.forEach((cell) => {
                     if (cell.part === "empty") {

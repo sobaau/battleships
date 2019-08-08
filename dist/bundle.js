@@ -77,7 +77,7 @@
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
 /******/
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "";
+/******/ 	__webpack_require__.p = "./src/";
 /******/
 /******/
 /******/ 	// Load entry module and return exports
@@ -710,6 +710,44 @@ module.exports = function (css) {
 
 /***/ }),
 
+/***/ "./src/components/App.tsx":
+/*!********************************!*\
+  !*** ./src/components/App.tsx ***!
+  \********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(/*! react */ "react");
+const PlayArea_1 = __webpack_require__(/*! ./PlayArea */ "./src/components/PlayArea.tsx");
+const Chat_1 = __webpack_require__(/*! ./Chat */ "./src/components/Chat.tsx");
+class App extends React.Component {
+    constructor() {
+        super(...arguments);
+        this.players = {
+            PlayerName: "Player",
+            EnemyName: "Enemy",
+        };
+    }
+    render() {
+        return (React.createElement("div", null,
+            React.createElement(PlayArea_1.PlayArea, { Players: this.players }),
+            React.createElement(Chat_1.Chat, null)));
+    }
+    getDetails(name) {
+        this.players.PlayerName = name;
+    }
+    getEnemyDetails(name) {
+        this.players.EnemyName = name;
+    }
+}
+exports.default = App;
+
+
+/***/ }),
+
 /***/ "./src/components/Chat.tsx":
 /*!*********************************!*\
   !*** ./src/components/Chat.tsx ***!
@@ -729,7 +767,7 @@ class Chat extends React.Component {
         this.state = {
             messages: [{
                     name: "David Preston",
-                    text: React.createElement("p", null, "Hello World!")
+                    text: React.createElement("p", null, "Hello World!"),
                 },
                 {
                     name: "Random Name",
@@ -885,7 +923,7 @@ class EnemyCanvas extends React.Component {
         if (this.props.GameState.ResE) {
             this.startGame();
             this.props.GameState.ResE = false;
-            this.props.update(this.props.GameState);
+            this.props.updateGameState(this.props.GameState);
         }
         this.drawCells(this.enemyCells);
         this.checkStatus();
@@ -897,8 +935,8 @@ class EnemyCanvas extends React.Component {
         if (this.shipsRemaining === 0) {
             console.log("Player Wins!");
             this.props.GameState.GameStatus = 3;
-            this.props.GameState.LastMove = "Player Wins!";
-            this.props.update(this.props.GameState);
+            this.props.GameState.Winner = "Player Wins!";
+            this.props.updateGameState(this.props.GameState);
         }
     }
     setEvents() {
@@ -952,13 +990,16 @@ class EnemyCanvas extends React.Component {
                 if (cell.part !== "empty" && !cell.hit) {
                     cell.c = "red";
                     this.lastMoveResult = "Hit!";
-                    this.props.GameState.LastMove = "Hit!";
-                    this.props.update(this.props.GameState);
+                    const move = {
+                        Player: "Enemy",
+                        Move: `Hit!`,
+                    };
                     cell.hit = true;
                     this.shipCount.set(cell.part, this.shipCount.get(cell.part) - 1);
                     if (this.shipCount.get(cell.part) === 0) {
                         console.log(`${cell.part} Was sunk`);
-                        this.props.GameState.LastMove = `Hit! Enemy ${cell.part} was sunk`;
+                        move.Player = "Enemy";
+                        move.Move = `${cell.part} was sunk`;
                         this.shipsRemaining--;
                         console.log(this.shipsRemaining);
                         if (this.shipsRemaining === 0) {
@@ -967,18 +1008,21 @@ class EnemyCanvas extends React.Component {
                             });
                             this.props.GameState.GameStatus = PlayArea_1.GameStatus.GameOver;
                         }
-                        this.props.update(this.props.GameState);
                     }
+                    this.props.updateMoves(move);
                     this.props.GameState.CurrentTurn = "Enemy";
-                    this.props.update(this.props.GameState);
+                    this.props.updateGameState(this.props.GameState);
                 }
                 else if (cell.part === "empty" && !cell.hit) {
                     cell.c = "white";
-                    this.props.GameState.LastMove = "Miss!";
-                    this.props.update(this.props.GameState);
+                    const move = {
+                        Player: "Enemy",
+                        Move: "Miss!",
+                    };
+                    this.props.updateMoves(move);
                     cell.hit = true;
                     this.props.GameState.CurrentTurn = "Enemy";
-                    this.props.update(this.props.GameState);
+                    this.props.updateGameState(this.props.GameState);
                 }
             }
         });
@@ -1062,12 +1106,35 @@ var GameStatus;
 class PlayArea extends React.Component {
     constructor(props) {
         super(props);
-        this.handle = (dataFromChild) => {
-            this.setState({ GameState: dataFromChild });
-        };
-        this.handleClick = () => {
+        this.updateGameState = (dataFromChild) => {
             this.setState((prevState) => {
                 let GameState = Object.assign({}, prevState.GameState);
+                GameState = dataFromChild;
+                return { GameState };
+            });
+        };
+        this.updateMoves = (moveUpdate) => {
+            this.setState((prevState) => {
+                const GameState = Object.assign({}, prevState.GameState);
+                GameState.Moves.push(moveUpdate);
+                return { GameState };
+            });
+        };
+        this.restartGame = () => {
+            this.setState((prevState) => {
+                const GameState = Object.assign({}, prevState.GameState);
+                console.log(prevState);
+                GameState.CurrentShip = null;
+                GameState.CurrentTurn = null;
+                GameState.Moves = [];
+                GameState.GameStatus = GameStatus.Setup;
+                GameState.ResE = false;
+                GameState.ResP = false;
+                GameState.Winner = null;
+                GameState.PlayerName = this.props.Players.PlayerName;
+                GameState.EnemyName = this.props.Players.EnemyName;
+                GameState.EnemyShipsR = 5;
+                GameState.PlayerShipsR = 5;
                 GameState.ResE = true;
                 GameState.ResP = true;
                 return { GameState };
@@ -1077,10 +1144,15 @@ class PlayArea extends React.Component {
             GameState: {
                 CurrentShip: null,
                 CurrentTurn: null,
-                LastMove: null,
+                Moves: [],
                 GameStatus: GameStatus.Setup,
                 ResE: false,
                 ResP: false,
+                Winner: null,
+                PlayerName: this.props.Players.PlayerName,
+                EnemyName: this.props.Players.EnemyName,
+                EnemyShipsR: 5,
+                PlayerShipsR: 5,
             },
         };
     }
@@ -1088,10 +1160,10 @@ class PlayArea extends React.Component {
         console.log("Game State in PlayA");
         console.log(this.state);
         return (React.createElement("div", null,
-            React.createElement(PlayerCanvas_1.PlayerCanvas, { update: this.handle, GameState: this.state.GameState }),
-            React.createElement("button", { onClick: this.handleClick }, "Rest"),
+            React.createElement(PlayerCanvas_1.PlayerCanvas, { updateGameState: this.updateGameState, updateMoves: this.updateMoves, GameState: this.state.GameState }),
+            React.createElement("button", { onClick: this.restartGame }, "Rest"),
             React.createElement(StatusArea_1.StatusArea, { GameState: this.state.GameState }),
-            React.createElement(EnemyCanvas_1.EnemyCanvas, { update: this.handle, GameState: this.state.GameState })));
+            React.createElement(EnemyCanvas_1.EnemyCanvas, { updateGameState: this.updateGameState, updateMoves: this.updateMoves, GameState: this.state.GameState })));
     }
 }
 exports.PlayArea = PlayArea;
@@ -1171,9 +1243,9 @@ class PlayerCanvas extends React.Component {
         this.clicks = 0;
         console.log(this.props.GameState.GameStatus);
         this.props.GameState.CurrentShip = "Carrier";
-        this.props.update(this.props.GameState);
+        this.props.updateGameState(this.props.GameState);
         this.setState((prevState) => {
-            let ShipParts = Object.assign({}, prevState.ShipParts);
+            const ShipParts = Object.assign({}, prevState.ShipParts);
             ShipParts.Carrier = 5;
             ShipParts.Battleship = 4;
             ShipParts.Cruiser = 3;
@@ -1188,7 +1260,7 @@ class PlayerCanvas extends React.Component {
         if (this.props.GameState.ResP) {
             this.startGame();
             this.props.GameState.ResP = false;
-            this.props.update(this.props.GameState);
+            this.props.updateGameState(this.props.GameState);
         }
         if (this.props.GameState.GameStatus === 1 && this.props.GameState.CurrentTurn === "Enemy") {
             this.playGame();
@@ -1205,9 +1277,9 @@ class PlayerCanvas extends React.Component {
             ShipRemaining: this.state.ShipRemaining - 1,
         });
         if (this.state.ShipRemaining === 0) {
-            this.props.GameState.LastMove = "Enemy Wins!";
+            this.props.GameState.Winner = "Enemy Wins!";
             this.props.GameState.GameStatus = PlayArea_1.GameStatus.GameOver;
-            this.props.update(this.props.GameState);
+            this.props.updateGameState(this.props.GameState);
         }
     }
     playGame() {
@@ -1216,7 +1288,7 @@ class PlayerCanvas extends React.Component {
         if (cell.part !== "empty" && !cell.hit) {
             if (cell.part === "Carrier") {
                 this.setState((prevState) => {
-                    let ShipParts = Object.assign({}, prevState.ShipParts);
+                    const ShipParts = Object.assign({}, prevState.ShipParts);
                     ShipParts.Carrier--;
                     return { ShipParts };
                 });
@@ -1226,7 +1298,7 @@ class PlayerCanvas extends React.Component {
             }
             else if (cell.part === "Battleship") {
                 this.setState((prevState) => {
-                    let ShipParts = Object.assign({}, prevState.ShipParts);
+                    const ShipParts = Object.assign({}, prevState.ShipParts);
                     ShipParts.Battleship--;
                     return { ShipParts };
                 });
@@ -1236,7 +1308,7 @@ class PlayerCanvas extends React.Component {
             }
             else if (cell.part === "Cruiser") {
                 this.setState((prevState) => {
-                    let ShipParts = Object.assign({}, prevState.ShipParts);
+                    const ShipParts = Object.assign({}, prevState.ShipParts);
                     ShipParts.Cruiser--;
                     return { ShipParts };
                 });
@@ -1246,7 +1318,7 @@ class PlayerCanvas extends React.Component {
             }
             else if (cell.part === "Submarine") {
                 this.setState((prevState) => {
-                    let ShipParts = Object.assign({}, prevState.ShipParts);
+                    const ShipParts = Object.assign({}, prevState.ShipParts);
                     ShipParts.Submarine--;
                     return { ShipParts };
                 });
@@ -1256,7 +1328,7 @@ class PlayerCanvas extends React.Component {
             }
             else {
                 this.setState((prevState) => {
-                    let ShipParts = Object.assign({}, prevState.ShipParts);
+                    const ShipParts = Object.assign({}, prevState.ShipParts);
                     ShipParts.Destroyer--;
                     return { ShipParts };
                 });
@@ -1268,16 +1340,24 @@ class PlayerCanvas extends React.Component {
             this.playerCells[randomCell].c = "red";
             this.playerCells[randomCell].part = "empty"; // #TODO: Fix this up.
             this.props.GameState.CurrentTurn = "Player";
-            this.props.GameState.LastMove = "Enemy Hit!";
-            this.props.update(this.props.GameState);
+            const move = {
+                Player: "Enemy",
+                Move: "Hit!",
+            };
+            this.props.updateMoves(move);
+            this.props.updateGameState(this.props.GameState);
         }
         else if (cell.part === "empty" && !cell.hit) {
             this.playerCells[randomCell].hit = true;
             this.playerCells[randomCell].c = "white";
             this.playerCells[randomCell].part = "empty"; // #TODO: Fix this up.
             this.props.GameState.CurrentTurn = "Player";
-            this.props.GameState.LastMove = "Enemy Missed!";
-            this.props.update(this.props.GameState);
+            const move = {
+                Player: "Enemy",
+                Move: "Miss!",
+            };
+            this.props.updateMoves(move);
+            this.props.updateGameState(this.props.GameState);
         }
         else {
             this.playGame();
@@ -1310,7 +1390,7 @@ class PlayerCanvas extends React.Component {
     }
     updateCurrentShip() {
         this.props.GameState.CurrentShip = this.state.CurrentShip;
-        this.props.update(this.props.GameState);
+        this.props.updateGameState(this.props.GameState);
     }
     createShipList() {
         const ships = [];
@@ -1387,7 +1467,7 @@ class PlayerCanvas extends React.Component {
                 this.setState({ GameStatus: PlayArea_1.GameStatus.Playing });
                 this.props.GameState.GameStatus = this.state.GameStatus;
                 this.props.GameState.CurrentTurn = "Player";
-                this.props.update(this.props.GameState);
+                this.props.updateGameState(this.props.GameState);
                 this.playerBoard = new Board_1.Board("player");
                 this.playerCells.forEach((cell) => {
                     if (cell.part === "empty") {
@@ -1532,7 +1612,8 @@ class StatusArea extends React.Component {
     render() {
         console.log(`Props in SA ${this.props}`);
         console.log(`State in SA ${this.state}`);
-        return (React.createElement(PlayingGame, { GameState: this.props.GameState }));
+        return (React.createElement("div", { className: "StatusArea" },
+            React.createElement(PlayingGame, { GameState: this.props.GameState })));
     }
 }
 exports.StatusArea = StatusArea;
@@ -1555,7 +1636,7 @@ const SetupStatus = (props) => {
 function LastMoveStatus(props) {
     return React.createElement("div", null,
         "Last Move: ",
-        props.GameState.LastMove);
+        props.GameState.Moves);
 }
 exports.LastMoveStatus = LastMoveStatus;
 function CurrentTurn(props) {
@@ -1565,6 +1646,8 @@ function CurrentTurn(props) {
         "'s turn.");
 }
 exports.CurrentTurn = CurrentTurn;
+function MoveList() {
+}
 
 
 /***/ }),
@@ -1582,11 +1665,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(/*! react */ "react");
 const ReactDOM = __webpack_require__(/*! react-dom */ "react-dom");
 __webpack_require__(/*! ./styles/app.scss */ "./src/styles/app.scss");
-const PlayArea_1 = __webpack_require__(/*! ./components/PlayArea */ "./src/components/PlayArea.tsx");
-const Chat_1 = __webpack_require__(/*! ./components/Chat */ "./src/components/Chat.tsx");
+const App_1 = __webpack_require__(/*! ./components/App */ "./src/components/App.tsx");
 ReactDOM.render(React.createElement("div", null,
-    React.createElement(PlayArea_1.PlayArea, null),
-    React.createElement(Chat_1.Chat, null)), document.getElementById("app"));
+    React.createElement(App_1.default, null)), document.getElementById("app"));
 
 
 /***/ }),

@@ -13,7 +13,9 @@ export class StatusArea extends React.Component<IGameProp, IGameProp> {
         console.log(`Props in SA ${this.props}`);
         console.log(`State in SA ${this.state}`);
         return (
+            <div className = "StatusArea">
             <PlayingGame GameState={this.props.GameState} />
+            </div>
         );
     }
 
@@ -36,10 +38,13 @@ const SetupStatus: React.SFC<IGameProp> = (props: IGameProp) => {
 };
 
 export function LastMoveStatus(props: IGameProp): any {
-    return <div>Last Move: {props.GameState.LastMove}</div>;
+    return <div>Last Move: {props.GameState.Moves}</div>;
 }
 
 export function CurrentTurn(props: IGameProp): any {
     return <div>Currently {props.GameState.CurrentTurn}'s turn.</div>;
 }
 
+function MoveList(): any{
+    
+}

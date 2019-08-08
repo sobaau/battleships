@@ -1,14 +1,33 @@
-
+export interface IMoveListItem {
+    Player: string;
+    Move: string;
+}
+export interface IGameState {
+        CurrentShip: string;
+        CurrentTurn: string;
+        Moves: IMoveListItem[];
+        GameStatus: number;
+        ResP: boolean;
+        ResE: boolean;
+        PlayerName: string;
+        EnemyName: string;
+        Winner: string;
+        EnemyShipsR: number;
+        PlayerShipsR: number;
+}
 export interface IGameProp {
-    GameState: {
-        CurrentShip: string,
-        CurrentTurn: string,
-        LastMove: string,
-        GameStatus: number,
-        ResP: boolean,
-        ResE: boolean,
-    };
+    GameState: IGameState;
 }
 export interface ICanvas extends IGameProp {
-    update?: any;
+    updateGameState?: any;
+    updateMoves?: any;
+}
+
+export interface IPlayAreaProp {
+    Players: IPlayers;
+}
+
+export interface IPlayers {
+    PlayerName: string;
+    EnemyName: string;
 }

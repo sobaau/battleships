@@ -5,9 +5,10 @@
   "main": "index.tsx",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack",
+    "build": "webpack -d && cp ./index.html dist/index.html && webpack-dev-server --content-base src/ --inline --hot",
+    "build:prod": "webpack -d && cp ./index.html dist/index.html",
     "watch": "webpack --watch",
-    "start": "webpack-dev-server --content-base ./ --inline --hot"
+    "start": "npm run build"
   },
   "keywords": [],
   "author": "David Preston",
@@ -25,13 +26,13 @@
     "tslint": "^5.18.0",
     "typescript": "^3.5.3",
     "webpack": "^4.38.0",
-    "webpack-cli": "^3.3.6"
+    "webpack-cli": "^3.3.6",
+    "webpack-dev-server": "^3.7.2"
   },
   "dependencies": {
     "d3": "^5.9.7",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "webpack-dev-server": "^3.7.2",
     "style-loader": "^0.23.1"
   }
 }

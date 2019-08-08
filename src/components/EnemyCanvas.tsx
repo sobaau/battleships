@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Board } from "../interface/Board";
 import { BoardCell } from "../interface/BoardCell";
-import {ICanvas, IGameProp} from "../interface/IGameProp";
+import {ICanvas, IGameProp, IMoveListItem} from "../interface/IGameProp";
 import { GameStatus } from "./PlayArea";
 
 interface IGameState {
@@ -61,7 +61,7 @@ export class EnemyCanvas extends React.Component<ICanvas, IGameState> {
         if (this.props.GameState.ResE) {
             this.startGame();
             this.props.GameState.ResE = false;
-            this.props.update(this.props.GameState);
+            this.props.updateGameState(this.props.GameState);
         }
         this.drawCells(this.enemyCells);
         this.checkStatus();
@@ -73,8 +73,8 @@ export class EnemyCanvas extends React.Component<ICanvas, IGameState> {
         if (this.shipsRemaining === 0) {
             console.log("Player Wins!");
             this.props.GameState.GameStatus = 3;
-            this.props.GameState.LastMove = "Player Wins!";
-            this.props.update(this.props.GameState);
+            this.props.GameState.Winner = "Player Wins!";
+            this.props.updateGameState(this.props.GameState);
         }
     }
 
@@ -133,13 +133,16 @@ export class EnemyCanvas extends React.Component<ICanvas, IGameState> {
                 if (cell.part !== "empty" && !cell.hit) {
                     cell.c = "red";
                     this.lastMoveResult = "Hit!";
-                    this.props.GameState.LastMove = "Hit!";
-                    this.props.update(this.props.GameState);
+                    const move: IMoveListItem = {
+                        Player: "Enemy",
+                        Move: `Hit!`,
+                    };
                     cell.hit = true;
                     this.shipCount.set(cell.part, this.shipCount.get(cell.part) - 1);
                     if (this.shipCount.get(cell.part) === 0) {
                         console.log(`${cell.part} Was sunk`);
-                        this.props.GameState.LastMove = `Hit! Enemy ${cell.part} was sunk`;
+                        move.Player = "Enemy";
+                        move.Move =`${cell.part} was sunk`;
                         this.shipsRemaining--;
                         console.log(this.shipsRemaining);
                         if (this.shipsRemaining === 0) {
@@ -148,17 +151,20 @@ export class EnemyCanvas extends React.Component<ICanvas, IGameState> {
                             });
                             this.props.GameState.GameStatus = GameStatus.GameOver;
                         }
-                        this.props.update(this.props.GameState);
                     }
+                    this.props.updateMoves(move);
                     this.props.GameState.CurrentTurn = "Enemy";
-                    this.props.update(this.props.GameState);
+                    this.props.updateGameState(this.props.GameState);
                 } else if (cell.part === "empty" && !cell.hit) {
                     cell.c = "white";
-                    this.props.GameState.LastMove = "Miss!";
-                    this.props.update(this.props.GameState);
+                    const move: IMoveListItem = {
+                        Player: "Enemy",
+                        Move: "Miss!",
+                    };
+                    this.props.updateMoves(move);
                     cell.hit = true;
                     this.props.GameState.CurrentTurn = "Enemy";
-                    this.props.update(this.props.GameState);
+                    this.props.updateGameState(this.props.GameState);
 
                 }
             }

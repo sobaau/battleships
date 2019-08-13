@@ -26,7 +26,7 @@ export function PlayingGame(props: IGameProp): any {
         return <SetupStatus GameState={props.GameState} />;
     } else {
         return (
-            <div>
+            <div className = "col-sm">
                 <LastMoveStatus GameState={props.GameState} />
                 <CurrentTurn GameState={props.GameState} />
             </div>

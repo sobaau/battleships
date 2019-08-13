@@ -1,12 +1,14 @@
-/*
+
 import * as React from "react";
 
 interface IPlayerDetailsProps {
     details?: any;
 }
 
-const PlayerDetails: React.FunctionComponent<any> = (props) => {
-  return ;
+const PlayerDetails: React.SFC<IPlayerDetailsProps> = (props: any) => {
+  return (
+      <p>e</p>
+  );
 };
 
 export default PlayerDetails;
@@ -19,6 +21,3 @@ const NameBox: React.FunctionComponent<INameBoxProps> = (props) => {
       <div><input type={}></input></div>
   )
 };
-
-
-*/

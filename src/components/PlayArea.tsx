@@ -34,15 +34,15 @@ export class PlayArea extends React.Component<IPlayAreaProp, IGameProp> {
         console.log("Game State in PlayA");
         console.log(this.state);
         return (
-            <div>
+            <div className="PlayArea">
                 <PlayerCanvas updateGameState={this.updateGameState}
                 updateMoves={this.updateMoves}
                 GameState={this.state.GameState} />
-                <button onClick={this.restartGame}>Rest</button>
                 <StatusArea GameState={this.state.GameState} />
                 <EnemyCanvas updateGameState={this.updateGameState}
                 updateMoves={this.updateMoves}
                 GameState={this.state.GameState} />
+                <button className="btn btn-primary" id="Reset" onClick={this.restartGame}>Rest</button>
             </div>
         );
     }

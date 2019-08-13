@@ -65,7 +65,7 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
         console.log(this.props);
         console.log(this.state);
         return (
-            <div>
+            <div className="canvas player col">
                 <canvas id="playerC" ref={this.canvasRef}
                 width={this.state.screen.width} height={this.state.screen.height} />
             </div>
@@ -215,8 +215,8 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
     private setEvents() {
         const canvas = this.canvasRef.current;
         canvas.addEventListener("click", (event) => {
-            const x = event.pageX - canvas.offsetLeft;
-            const y = event.pageY - canvas.offsetTop;
+            const x = event.clientX - canvas.getBoundingClientRect().left;
+            const y = event.clientY - canvas.getBoundingClientRect().top;
             if (this.state.GameStatus === 0) {
                 this.toggleCell(this.playerCells, x, y);
                 this.checkValid();
@@ -228,8 +228,8 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
         });
 
         this.canvasRef.current.addEventListener("mousemove", (event) => {
-            const x = event.pageX - canvas.offsetLeft;
-            const y = event.pageY - canvas.offsetTop;
+            const x = event.clientX - canvas.getBoundingClientRect().left;
+            const y = event.clientY - canvas.getBoundingClientRect().top;
             // console.log(`${x}, ${y}`);
             if (this.state.GameStatus === 0) {
                 this.hoverEffect(this.playerCells, x, y);

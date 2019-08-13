@@ -45,7 +45,7 @@ export class EnemyCanvas extends React.Component<ICanvas, IGameState> {
         console.log("Props in E ");
         console.log(this.props);
         return (
-            <div>
+            <div className="canvas enemy">
                 <canvas id="enemyC"ref={this.canvasRef} width="510" height="510" />
             </div>
         );
@@ -81,16 +81,16 @@ export class EnemyCanvas extends React.Component<ICanvas, IGameState> {
     private setEvents() {
         const canvas = this.canvasRef.current;
         canvas.addEventListener("click", (event) => {
-            const x = event.pageX - canvas.offsetLeft;
-            const y = event.pageY - canvas.offsetTop;
+            const x = event.clientX - canvas.getBoundingClientRect().left;
+            const y = event.clientY - canvas.getBoundingClientRect().top;
             if (this.props.GameState.GameStatus === 1 && this.props.GameState.CurrentTurn === "Player") {
                 this.toggleCell(this.enemyCells, x, y);
             }
         });
 
         this.canvasRef.current.addEventListener("mousemove", (event) => {
-            const x = event.pageX - canvas.offsetLeft;
-            const y = event.pageY - canvas.offsetTop;
+            const x = event.clientX - canvas.getBoundingClientRect().left;
+            const y = event.clientY - canvas.getBoundingClientRect().top;
             // console.log(`${x}, ${y}`);
             if (this.props.GameState.GameStatus === 1) {
                 this.hoverEffect(this.enemyCells, x, y);

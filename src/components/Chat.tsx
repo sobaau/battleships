@@ -28,7 +28,7 @@ export class Chat extends React.Component<any, any> {
     public render() {
         console.log(this.state);
         return (
-            <div id="chat">
+            <div className = "chatArea" id="chat">
                 <ChatBox messages={this.state.messages} />
                 <ChatSend sendMessage={this.sendMessage} />
             </div>

@@ -1,5 +1,5 @@
-import * as React from "react";
-import { IGameProp } from "../interface/IGameProp";
+import * as React from 'react';
+import { IGameProp } from '../interface/IGameProp';
 
 export class StatusArea extends React.Component<IGameProp, IGameProp> {
     constructor(props: any) {
@@ -7,18 +7,16 @@ export class StatusArea extends React.Component<IGameProp, IGameProp> {
         this.state = {
             GameState: props.GameState,
         };
-
     }
-    public render() {
+    public render(): JSX.Element {
         console.log(`Props in SA ${this.props}`);
         console.log(`State in SA ${this.state}`);
         return (
-            <div className = "StatusArea">
-            <PlayingGame GameState={this.props.GameState} />
+            <div className="StatusArea">
+                <PlayingGame GameState={this.props.GameState} />
             </div>
         );
     }
-
 }
 
 export function PlayingGame(props: IGameProp): any {
@@ -26,7 +24,7 @@ export function PlayingGame(props: IGameProp): any {
         return <SetupStatus GameState={props.GameState} />;
     } else {
         return (
-            <div className = "col-sm">
+            <div className="col-sm">
                 <LastMoveStatus GameState={props.GameState} />
                 <CurrentTurn GameState={props.GameState} />
             </div>
@@ -45,6 +43,4 @@ export function CurrentTurn(props: IGameProp): any {
     return <div>Currently {props.GameState.CurrentTurn}'s turn.</div>;
 }
 
-function MoveList(): any{
-    
-}
+function MoveList(): any {}

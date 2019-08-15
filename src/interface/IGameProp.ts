@@ -3,18 +3,18 @@ export interface IMoveListItem {
     Move: string;
 }
 export interface IGameState {
-        CurrentShip: string;
-        CurrentTurn: string;
-        Moves: IMoveListItem[];
-        GameStatus: number;
-        ResP: boolean;
-        ResE: boolean;
-        PlayerName: string;
-        EnemyName: string;
-        Winner: string;
-        EnemyShipsR: number;
-        PlayerShipsR: number;
-        SetupMessages: string;
+    CurrentShip: string;
+    CurrentTurn: string;
+    Moves: IMoveListItem[];
+    GameStatus: number;
+    ResP: boolean;
+    ResE: boolean;
+    PlayerName: string;
+    EnemyName: string;
+    Winner: string;
+    EnemyShipsR: number;
+    PlayerShipsR: number;
+    SetupMessages: string;
 }
 export interface IGameProp {
     GameState: IGameState;

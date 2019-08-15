@@ -1,36 +1,35 @@
-import * as React from "react";
+import * as React from 'react';
 
 export class ChatSend extends React.Component<any, any> {
     constructor(props: any) {
         super(props);
         this.state = {
-            message: "",
+            message: '',
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
-    public handleChange(e: any) {
+    public handleChange(e: any): void {
         this.setState({
             message: e.target.value,
         });
     }
-    public handleSubmit(e: any) {
+    public handleSubmit(e: any): void {
         e.preventDefault();
         this.props.sendMessage(this.state.message);
         this.setState({
-            message: "",
+            message: '',
         });
     }
-    public render() {
+    public render(): JSX.Element {
         return (
-            <form
-                onSubmit={this.handleSubmit}
-                className="send-box">
+            <form onSubmit={this.handleSubmit} className="send-box">
                 <input
                     onChange={this.handleChange}
                     value={this.state.message}
                     placeholder="Type your message and hit ENTER"
-                    type="text" />
+                    type="text"
+                />
             </form>
         );
     }

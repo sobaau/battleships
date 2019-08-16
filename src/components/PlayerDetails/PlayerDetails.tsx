@@ -7,12 +7,12 @@ interface ComponentNameState {
     roomID: number;
 }
 
-class PlayerDetails extends React.Component<ComponentNameProps, ComponentNameState> {
+class PlayerDetails extends React.Component<ComponentNameProps, any> {
     constructor(props: any) {
         super(props);
         this.state = {
             playerName: undefined,
-            roomID: undefined,
+            roomId: undefined,
         };
     }
     public render(): JSX.Element {
@@ -24,7 +24,7 @@ class PlayerDetails extends React.Component<ComponentNameProps, ComponentNameSta
                 </label>
                 <input
                     type="text"
-                    name="player-input"
+                    name="playerName"
                     required
                     onChange={this.handleChange}
                     value={this.state.playerName}
@@ -33,14 +33,14 @@ class PlayerDetails extends React.Component<ComponentNameProps, ComponentNameSta
                     <span id="room-id">Room ID</span>
                 </label>
                 <input
-                    type="number"
+                    type="text"
                     className="room-input"
                     required
-                    name="room"
+                    name="roomId"
                     onChange={this.handleChange}
-                    value={this.state.roomID}
+                    value={this.state.roomId}
                 />
-                <button className="n">Submit</button>
+                <button className="btn">Submit</button>
             </form>
         );
     }
@@ -50,10 +50,7 @@ class PlayerDetails extends React.Component<ComponentNameProps, ComponentNameSta
     };
     handleChange = (e: any): void => {
         console.log(e.target);
-        if (e.name === 'player-input') {
-            this.setState({ playerName: e.target.value });
-        }
-        if (e.name === 'room') this.setState({ roomID: e.target.value });
+        this.setState({ [e.target.name]: e.target.value });
     };
 }
 

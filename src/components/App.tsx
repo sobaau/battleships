@@ -5,6 +5,8 @@ import { Chat } from './chat/Chat';
 import { PlayArea } from './PlayArea';
 import Nav from './Nav';
 import PlayerDetails from './PlayerDetails/PlayerDetails';
+import LeaderBoard from './LeaderBoard/LeaderBoard';
+import Info from './Info';
 export default class App extends React.Component<any> {
     private players: IPlayers = {
         PlayerName: 'Player',
@@ -16,6 +18,8 @@ export default class App extends React.Component<any> {
                 <Nav />
                 <PlayerDetails />
                 <Chat />
+                <LeaderBoard />
+                <Info />
             </div>
         );
     }

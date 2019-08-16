@@ -139,7 +139,7 @@ exports.push([module.i, "/*!\n * Bootstrap v4.3.1 (https://getbootstrap.com/)\n 
 
 exports = module.exports = __webpack_require__(/*! ../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js")(false);
 // Module
-exports.push([module.i, "body {\n  background-color: #15232D;\n  color: bisque;\n  font-family: Arial, Helvetica, sans-serif; }\n\n#can {\n  border: 1px solid #000000; }\n\n.message-list {\n  border-color: #000000; }\n\n.btn {\n  background-color: #a543a5; }\n\n.ul {\n  padding: 0;\n  list-style: none; }\n\n.container {\n  border: 1px solid #000000; }\n\n.player-details {\n  display: flex;\n  justify-content: space-around;\n  align-items: center;\n  flex-direction: column;\n  font-family: Arial, Helvetica, sans-serif;\n  width: 30rem;\n  border: 1px solid #000000; }\n\n.player-details input {\n  width: 100%;\n  height: 100%; }\n", ""]);
+exports.push([module.i, "body {\n  background-color: #15232D;\n  color: bisque;\n  font-family: Arial, Helvetica, sans-serif; }\n\n#can {\n  border: 1px solid #000000; }\n\n.message-list {\n  border-color: #000000; }\n\n.btn {\n  background-color: #a543a5; }\n\n.message-list {\n  border: 1px solid #000000;\n  padding: 0;\n  list-style: none; }\n\n.message-text {\n  margin-left: 20px; }\n\n.container {\n  border: 1px solid #000000; }\n\n.player-details {\n  display: flex;\n  justify-content: space-around;\n  align-items: center;\n  flex-direction: column;\n  font-family: Arial, Helvetica, sans-serif;\n  width: 30rem;\n  border: 1px solid #000000; }\n\n.player-details input {\n  width: 100%;\n  height: 100%; }\n", ""]);
 
 
 /***/ }),
@@ -768,6 +768,8 @@ const React = __webpack_require__(/*! react */ "react");
 const Chat_1 = __webpack_require__(/*! ./chat/Chat */ "./src/components/chat/Chat.tsx");
 const Nav_1 = __webpack_require__(/*! ./Nav */ "./src/components/Nav.tsx");
 const PlayerDetails_1 = __webpack_require__(/*! ./PlayerDetails/PlayerDetails */ "./src/components/PlayerDetails/PlayerDetails.tsx");
+const LeaderBoard_1 = __webpack_require__(/*! ./LeaderBoard/LeaderBoard */ "./src/components/LeaderBoard/LeaderBoard.tsx");
+const Info_1 = __webpack_require__(/*! ./Info */ "./src/components/Info.tsx");
 class App extends React.Component {
     constructor() {
         super(...arguments);
@@ -780,7 +782,9 @@ class App extends React.Component {
         return (React.createElement("div", { className: "container" },
             React.createElement(Nav_1.default, null),
             React.createElement(PlayerDetails_1.default, null),
-            React.createElement(Chat_1.Chat, null)));
+            React.createElement(Chat_1.Chat, null),
+            React.createElement(LeaderBoard_1.default, null),
+            React.createElement(Info_1.default, null)));
     }
     getDetails(name) {
         this.players.PlayerName = name;
@@ -791,6 +795,90 @@ class App extends React.Component {
 }
 exports.default = App;
 //<PlayArea Players={this.players}/>
+
+
+/***/ }),
+
+/***/ "./src/components/Info.tsx":
+/*!*********************************!*\
+  !*** ./src/components/Info.tsx ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(/*! react */ "react");
+;
+;
+class Info extends React.Component {
+    render() {
+        return (React.createElement("span", null, "ComponentName"));
+    }
+}
+exports.default = Info;
+
+
+/***/ }),
+
+/***/ "./src/components/LeaderBoard/LeaderBoard.tsx":
+/*!****************************************************!*\
+  !*** ./src/components/LeaderBoard/LeaderBoard.tsx ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(/*! react */ "react");
+class LeaderBoard extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            topPlayers: [
+                {
+                    name: 'Test',
+                    time: '1:00',
+                },
+                {
+                    name: 'Test2',
+                    time: '1:13',
+                },
+                {
+                    name: 'Test3',
+                    time: '1:14',
+                },
+                {
+                    name: 'Test2',
+                    time: '1:15',
+                },
+            ],
+        };
+    }
+    render() {
+        return (React.createElement("div", { className: "leader-board" },
+            React.createElement(LBoard, { topPlayers: this.state.topPlayers })));
+    }
+}
+exports.default = LeaderBoard;
+const LBoard = ({ topPlayers }) => {
+    return (React.createElement("table", { className: "leader-list" },
+        React.createElement("tr", null,
+            React.createElement("td", null, "Name"),
+            React.createElement("td", null, "Time")),
+        React.createElement("tr", null, topPlayers.map((message, index) => {
+            return (React.createElement(LeaderCell, { name: message.name })
+                ,
+                    React.createElement("leader", { key: index, className: "leader-list" },
+                        React.createElement("td", null, message.name),
+                        React.createElement("td", null, message.time)));
+        }))));
+};
+const LeaderCell = (props) => {
+    return React.createElement("td", null, props);
+};
 
 
 /***/ }),
@@ -809,10 +897,16 @@ const React = __webpack_require__(/*! react */ "react");
 class Nav extends React.Component {
     render() {
         return (React.createElement("div", { className: "navbar-expand-lg navbar-dark bg-dark" },
-            React.createElement("a", { className: "navbar-brand", href: "#" }, "BattleShips")));
+            React.createElement("a", { className: "navbar-brand", href: "#" }, "BattleShips"),
+            React.createElement(NavLink, { text: "Info", classN: "nav-info" }),
+            React.createElement(NavLink, { text: "LeaderBoard", classN: "nav-leader" }),
+            React.createElement(NavLink, { text: "Play", classN: "nav-play" })));
     }
 }
 exports.default = Nav;
+const NavLink = ({ text, link, classN }) => {
+    return React.createElement("span", { className: classN }, text);
+};
 
 
 /***/ }),
@@ -837,15 +931,11 @@ class PlayerDetails extends React.Component {
         };
         this.handleChange = (e) => {
             console.log(e.target);
-            if (e.name === 'player-input') {
-                this.setState({ playerName: e.target.value });
-            }
-            if (e.name === 'room')
-                this.setState({ roomID: e.target.value });
+            this.setState({ [e.target.name]: e.target.value });
         };
         this.state = {
             playerName: undefined,
-            roomID: undefined,
+            roomId: undefined,
         };
     }
     render() {
@@ -853,11 +943,11 @@ class PlayerDetails extends React.Component {
             React.createElement(PlayerHeader, null),
             React.createElement("label", null,
                 React.createElement("span", { className: "player-name" }, "Please Enter your player name")),
-            React.createElement("input", { type: "text", name: "player-input", required: true, onChange: this.handleChange, value: this.state.playerName }),
+            React.createElement("input", { type: "text", name: "playerName", required: true, onChange: this.handleChange, value: this.state.playerName }),
             React.createElement("label", null,
                 React.createElement("span", { id: "room-id" }, "Room ID")),
-            React.createElement("input", { type: "number", className: "room-input", required: true, name: "room", onChange: this.handleChange, value: this.state.roomID }),
-            React.createElement("button", { className: "n" }, "Submit")));
+            React.createElement("input", { type: "text", className: "room-input", required: true, name: "roomId", onChange: this.handleChange, value: this.state.roomId }),
+            React.createElement("button", { className: "btn" }, "Submit")));
     }
 }
 exports.default = PlayerDetails;
@@ -939,8 +1029,8 @@ class ChatBox extends React.Component {
     render() {
         return (React.createElement("ul", { className: "message-list" }, this.props.messages.map((message, index) => {
             return (React.createElement("li", { key: index, className: "message" },
-                React.createElement("div", null, message.name),
-                React.createElement("div", null, message.text)));
+                React.createElement("div", { className: "message-name" }, message.name),
+                React.createElement("div", { className: "message-text" }, message.text)));
         })));
     }
 }

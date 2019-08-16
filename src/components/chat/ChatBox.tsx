@@ -10,8 +10,8 @@ export class ChatBox extends React.Component<IChatProps, any> {
                 {this.props.messages.map((message: any, index: any) => {
                     return (
                         <li key={index} className="message">
-                            <div>{message.name}</div>
-                            <div>{message.text}</div>
+                            <div className="message-name">{message.name}</div>
+                            <div className="message-text">{message.text}</div>
                         </li>
                     );
                 })}

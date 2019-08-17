@@ -1,5 +1,5 @@
 import * as React from 'react';
-
+import { Button } from 'react-bootstrap';
 interface ComponentNameProps {}
 
 interface ComponentNameState {
@@ -40,7 +40,9 @@ class PlayerDetails extends React.Component<ComponentNameProps, any> {
                     onChange={this.handleChange}
                     value={this.state.roomId}
                 />
-                <button className="btn">Submit</button>
+                <Button variant="outline-success" type="submit">
+                    Submit
+                </Button>
             </form>
         );
     }

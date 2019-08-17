@@ -46,27 +46,16 @@ export default LeaderBoard;
 
 const LBoard: React.FC<LeaderState> = ({ topPlayers }): JSX.Element => {
     return (
-        <table className="leader-list">
-            <tr>
-                <td>Name</td>
-                <td>Time</td>
-            </tr>
-            <tr>
-                {topPlayers.map((message: any, index: any) => {
-                    return (
-                        <LeaderCell name={message.name}/>
-                        <leader
-                        <div key={index} className="leader-list">
-                            <td>{message.name}</td>
-                            <td>{message.time}</td>
+        <ul className="leader-list">
+            {topPlayers.map((message: any, index: any) => {
+                return (
+                    <li key={index} className="leader-list">
+                        <div>
+                            {message.name} {message.time}
                         </div>
-                    );
-                })}
-            </tr>
-        </table>
+                    </li>
+                );
+            })}
+        </ul>
     );
-};
-
-const LeaderCell: React.FC<any> = (props: any) => {
-    return <td>{props}</td>;
 };

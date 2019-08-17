@@ -3,6 +3,7 @@ import { IGameProp, IGameState, IMoveListItem, IPlayAreaProp } from '../interfac
 import { EnemyCanvas } from './canvas/EnemyCanvas';
 import { PlayerCanvas } from './canvas/PlayerCanvas';
 import { StatusArea } from './StatusArea';
+import { Container, Row, Col } from 'react-bootstrap';
 
 export enum GameStatus {
     Setup,
@@ -34,21 +35,36 @@ export class PlayArea extends React.Component<IPlayAreaProp, IGameProp> {
         console.log('Game State in PlayA');
         console.log(this.state);
         return (
-            <div className="PlayArea">
-                <PlayerCanvas
-                    updateGameState={this.updateGameState}
-                    updateMoves={this.updateMoves}
-                    GameState={this.state.GameState}
-                />
-                <StatusArea GameState={this.state.GameState} />
-                <EnemyCanvas
-                    updateGameState={this.updateGameState}
-                    updateMoves={this.updateMoves}
-                    GameState={this.state.GameState}
-                />
-                <button className="btn btn-primary" id="Reset" onClick={this.restartGame}>
-                    Rest
-                </button>
+            <div>
+                <Container fluid={true}>
+                    <Row>
+                        <Col sm="2"></Col>
+                        <Col md="auto">
+                            <EnemyCanvas
+                                updateGameState={this.updateGameState}
+                                updateMoves={this.updateMoves}
+                                GameState={this.state.GameState}
+                            />
+                        </Col>
+                        <Col md="auto">
+                            <PlayerCanvas
+                                updateGameState={this.updateGameState}
+                                updateMoves={this.updateMoves}
+                                GameState={this.state.GameState}
+                            />
+                        </Col>
+                        <Col md="auto">
+                            <StatusArea GameState={this.state.GameState} />
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xl={{ span: 2, offset: 6 }}>
+                            <button className="btn btn-primary" id="Reset" onClick={this.restartGame}>
+                                Rest
+                            </button>
+                        </Col>
+                    </Row>
+                </Container>
             </div>
         );
     }

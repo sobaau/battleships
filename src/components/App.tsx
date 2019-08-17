@@ -3,10 +3,12 @@ import * as React from 'react';
 import { IPlayers } from '../interface/IGameProp';
 import { Chat } from './chat/Chat';
 import { PlayArea } from './PlayArea';
-import Nav from './Nav';
+import NaviBar from './NaviBar';
 import PlayerDetails from './PlayerDetails/PlayerDetails';
 import LeaderBoard from './LeaderBoard/LeaderBoard';
 import Info from './Info';
+import { Container, Row, Col } from 'react-bootstrap';
+
 export default class App extends React.Component<any> {
     private players: IPlayers = {
         PlayerName: 'Player',
@@ -14,12 +16,21 @@ export default class App extends React.Component<any> {
     };
     public render(): JSX.Element {
         return (
-            <div className="container">
-                <Nav />
-                <PlayerDetails />
-                <Chat />
-                <LeaderBoard />
-                <Info />
+            <div>
+                <NaviBar />
+                <Container fluid={true}>
+                    <PlayerDetails />
+                    <Row>
+                        <Col>
+                            <PlayArea Players={this.players} />
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Chat />
+                    </Row>
+                    <LeaderBoard />
+                    <Info />
+                </Container>
             </div>
         );
     }

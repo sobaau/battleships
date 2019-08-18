@@ -3,7 +3,6 @@ import { IGameProp, IGameState, IMoveListItem, IPlayAreaProp } from '../interfac
 import { EnemyCanvas } from './canvas/EnemyCanvas';
 import { PlayerCanvas } from './canvas/PlayerCanvas';
 import { StatusArea } from './StatusArea';
-import { Container, Row, Col } from 'react-bootstrap';
 import { Chat } from './chat/Chat';
 
 export enum GameStatus {
@@ -37,35 +36,25 @@ export class PlayArea extends React.Component<IPlayAreaProp, IGameProp> {
     console.log(this.state);
     return (
       <div className="play-area">
-        <Container>
-          <Row>
-            <Col xl={{span: 4, offset: 2 }}>
-              <EnemyCanvas
-                updateGameState={this.updateGameState}
-                updateMoves={this.updateMoves}
-                GameState={this.state.GameState}
-              />
-            </Col>
-            <Col xl={{span: 5, offset: 1 }}>
-              <PlayerCanvas
-                updateGameState={this.updateGameState}
-                updateMoves={this.updateMoves}
-                GameState={this.state.GameState}
-              />
-              <button className="btn btn-primary" id="Reset" onClick={this.restartGame}>
-                Rest
-              </button>
-            </Col>
-            <Col xl={{ span: 1, offset: 1 }}>
-              <StatusArea GameState={this.state.GameState} />
-            </Col>
-          </Row>
-          <Row className="justify-content-center">
-            <Col>
-              <Chat />
-            </Col>
-          </Row>
-        </Container>
+        <EnemyCanvas
+          updateGameState={this.updateGameState}
+          updateMoves={this.updateMoves}
+          GameState={this.state.GameState}
+        />
+        <PlayerCanvas
+          updateGameState={this.updateGameState}
+          updateMoves={this.updateMoves}
+          GameState={this.state.GameState}
+        />
+
+        <StatusArea GameState={this.state.GameState} />
+        <div className="reset">
+          <button className="btn btn-primary" id="Reset" onClick={this.restartGame}>
+            Rest
+          </button>
+        </div>
+
+        <Chat />
       </div>
     );
   }

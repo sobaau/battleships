@@ -1,56 +1,67 @@
 import * as React from 'react';
 import { ChatBox } from './ChatBox';
 import { ChatSend } from './ChatSend';
-import { Container, Row , Col} from 'react-bootstrap';
+import '../../styles/chat.scss';
+interface ChatState {
+  messages: ChatMessages[];
+}
+export interface ChatMessages {
+  username: string;
+  text: string;
+  fromMe: boolean;
+}
 
-export class Chat extends React.Component<any, any> {
+export class Chat extends React.Component<any, ChatState> {
   constructor(props: any) {
     super(props);
     this.state = {
       messages: [
         {
-          name: 'David Preston',
-          text: <p>Hello World!</p>,
+          username: 'Hue',
+          text: 'Friendly Text',
+          fromMe: true,
         },
         {
-          name: 'Random Name',
-          text: <p>It works!</p>,
+          username: 'Random Name',
+          text: 'Enemy text',
+          fromMe: false,
         },
         {
-          name: 'Keeev',
-          text: <p>Yay</p>,
+          username: 'Random Name',
+          text: 'Enemy text 2',
+          fromMe: false,
         },
         {
-          name: 'HotDog',
-          text: <p>Test</p>,
+          username: 'Random Name',
+          text: 'Enemy text 3',
+          fromMe: false,
         },
       ],
     };
   }
   public render(): JSX.Element {
-    console.log(this.state);
     return (
       <div className="chat-area" id="chat">
-        <Container>
-          <Row>
-            <Col>
-              <ChatBox messages={this.state.messages} />
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <ChatSend sendMessage={this.sendMessage} />
-            </Col>
-          </Row>
-        </Container>
+        <span className="chat-title">Chat</span>
+        <ChatBox messages={this.state.messages} />
+        <ChatSend onSend={this.sendHandler} />
       </div>
     );
   }
-  private sendMessage(text: any): any {
-    /*
-        this.currentUser.sendMessage({
-            text,
-        });
-        */
-  }
+  sendHandler = (message: any): void => {
+    console.log(message);
+    const Message = {
+      username: 'Hue', //this.props.username,
+      text: message,
+      fromMe: true,
+    };
+    //this.socket.emit(‘client:message’, Message);
+    Message.fromMe = true;
+    this.addMessage(Message);
+  };
+  addMessage = (message: any): void => {
+    const messages = this.state.messages;
+    messages.push(message);
+    this.setState({ messages });
+  };
 }

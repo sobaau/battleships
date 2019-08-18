@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { Button, Container, Row } from 'react-bootstrap';
 import { Col } from 'react-bootstrap';
+import '../../styles/login.scss'
+import { Navbar } from 'react-bootstrap';
 interface ComponentNameProps {
   handleLogin?: any;
 }

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { IGameProp } from '../interface/IGameProp';
-
+import '../styles/status.scss'
 export class StatusArea extends React.Component<IGameProp, IGameProp> {
   constructor(props: any) {
     super(props);

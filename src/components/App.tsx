@@ -8,6 +8,7 @@ import Info from './Info';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { Container, Row } from 'react-bootstrap';
 import { Col } from 'react-bootstrap';
+import { Navbar } from 'react-bootstrap';
 interface AppState {
   login: boolean;
 }
@@ -19,7 +20,7 @@ export default class App extends React.Component<any, AppState> {
   constructor(props: any) {
     super(props);
     this.state = {
-      login: true,
+      login: false,
     };
   }
   public render(): JSX.Element {
@@ -39,6 +40,9 @@ export default class App extends React.Component<any, AppState> {
     } else {
       return (
         <div>
+          <Navbar variant="dark" expand="lg">
+          <Navbar.Brand>ReactShips</Navbar.Brand>
+          </Navbar>
           <Container>
             <Row className="justify-content-md-center">
               <Col md="auto">
@@ -60,4 +64,3 @@ export default class App extends React.Component<any, AppState> {
     this.setState({ login: b });
   };
 }
-//<PlayArea Players={this.players}/>

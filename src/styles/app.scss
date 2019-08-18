@@ -2,45 +2,71 @@ body {
     background-color: #15232D;
     color: bisque;
     font-family: Arial, Helvetica, sans-serif;
+    min-width:1340px
 
 }
 #app{
     width: 100%;
     height: 100%;
 }
-
 .navbar{
-    background: #534848;
+    background: #455072;
+}
+.play-area{
+  margin-top: 3%;
+  border: 3px solid #425b69;
+  width: 100%;
+  height: 100%;
+
 }
 .message-list {
     border: 1px solid #000000;
-    background: #000000;
+    background: #455072;
     padding: 0;
     list-style: none;
 }
 .message-text{
     margin-left: 20px;
 }
-.container {
-    border: 1px solid #000000
+.status-area{
+  background: #455072;
+  height: 38vh;
+  width: 14rem;
+  border: 3px solid #38a8e9;
 }
-
 .player-details {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    flex-direction: column;
-    font-family: Arial, Helvetica, sans-serif;
     width: 30rem;
     border: 1px solid #000000
 
 }
+.send-box{
+  width: 100%
+}
 
+
+.chat-area{
+  width: 50rem;
+  border: 3px solid #ee0000
+
+}
+.canvas-enemy{
+  height: 510px;
+  width: 510px;
+  border: 3px solid #8a4444
+
+}
+.canvas-player{
+  height: 510px;
+  width: 510px;
+  border: 3px solid #326342;
+}
+#Reset{
+  align-self: auto;
+  border: 3px solid #01f351;
+
+}
 .player-details input {
     width: 100%;
     height: 100%;
 }
 
-.player-details label{
-
-}

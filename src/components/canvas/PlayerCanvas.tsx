@@ -227,7 +227,6 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
     this.canvasRef.current.addEventListener('mousemove', event => {
       const x = event.clientX - canvas.getBoundingClientRect().left;
       const y = event.clientY - canvas.getBoundingClientRect().top;
-      // console.log(`${x}, ${y}`);
       if (this.state.GameStatus === 0) {
         this.hoverEffect(this.playerCells, x, y);
       }
@@ -342,6 +341,8 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
   private toggleCell(arr: BoardCell[], x: number, y: number): void {
     const ctx = this.state.ctx;
     if (this.state.GameStatus === 0) {
+      this.props.GameState.SetupMessages = '';
+      this.props.updateGameState(this.props.GameState);
       arr.forEach(cell => {
         if (cell.contains(x, y) && this.clicks !== this.currentShip.size && cell.part === 'empty') {
           this.shipCells.push(cell);

@@ -8,7 +8,7 @@ interface ChatState {
 export interface ChatMessages {
   username: string;
   text: string;
-  fromMe: boolean;
+  me: boolean;
 }
 
 export class Chat extends React.Component<any, ChatState> {
@@ -19,22 +19,22 @@ export class Chat extends React.Component<any, ChatState> {
         {
           username: 'Hue',
           text: 'Friendly Text',
-          fromMe: true,
+          me: true,
         },
         {
           username: 'Random Name',
           text: 'Enemy text',
-          fromMe: false,
+          me: false,
         },
         {
           username: 'Random Name',
           text: 'Enemy text 2',
-          fromMe: false,
+          me: false,
         },
         {
           username: 'Random Name',
           text: 'Enemy text 3',
-          fromMe: false,
+          me: false,
         },
       ],
     };
@@ -53,10 +53,10 @@ export class Chat extends React.Component<any, ChatState> {
     const Message = {
       username: 'Hue', //this.props.username,
       text: message,
-      fromMe: true,
+      me: true,
     };
     //this.socket.emit(‘client:message’, Message);
-    Message.fromMe = true;
+    Message.me = true;
     this.addMessage(Message);
   };
   addMessage = (message: any): void => {

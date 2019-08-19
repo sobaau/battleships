@@ -95,7 +95,6 @@ export class EnemyCanvas extends React.Component<ICanvas, IGameState> {
     this.canvasRef.current.addEventListener('mousemove', event => {
       const x = event.clientX - canvas.getBoundingClientRect().left;
       const y = event.clientY - canvas.getBoundingClientRect().top;
-      // console.log(`${x}, ${y}`);
       if (this.props.GameState.GameStatus === 1) {
         this.hoverEffect(this.enemyCells, x, y);
       }
@@ -142,9 +141,9 @@ export class EnemyCanvas extends React.Component<ICanvas, IGameState> {
           cell.hit = true;
           this.shipCount.set(cell.part, this.shipCount.get(cell.part) - 1);
           if (this.shipCount.get(cell.part) === 0) {
-            console.log(`${cell.part} Was sunk`);
-            move.Player = 'Enemy';
-            move.Move = `${cell.part} Was sunk`;
+            console.log(`${cell.part} was sunk`);
+            move.Player = 'Player';
+            move.Move = `${cell.part} was sunk`;
             this.shipsRemaining--;
             console.log(this.shipsRemaining);
             if (this.shipsRemaining === 0) {
@@ -160,7 +159,7 @@ export class EnemyCanvas extends React.Component<ICanvas, IGameState> {
         } else if (cell.part === 'empty' && !cell.hit) {
           cell.c = 'white';
           const move: IMoveListItem = {
-            Player: 'Enemy',
+            Player: 'Player',
             Move: 'Miss!',
           };
           this.props.updateMoves(move);

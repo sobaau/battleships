@@ -1,11 +1,14 @@
 import * as React from 'react';
-import { jsxAttribute, jsxClosingFragment } from '@babel/types';
 
-export interface IChatMessageProps {}
+export interface IChatMessageProps {
+  username: string;
+  text: string;
+  me: boolean;
+}
 
 export default class ChatMessage extends React.Component<any, any> {
   public render(): JSX.Element {
-    const fromMe = this.props.fromMe ? 'from-me' : 'enemy';
+    const fromMe = this.props.me ? 'from-me' : 'enemy';
     console.log(this.props)
     return (
       <div className={fromMe}>

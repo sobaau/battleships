@@ -2,7 +2,7 @@ import * as React from 'react';
 import { IGameProp, IGameState, IMoveListItem, IPlayAreaProp } from '../interface/IGameProp';
 import { EnemyCanvas } from './canvas/EnemyCanvas';
 import { PlayerCanvas } from './canvas/PlayerCanvas';
-import { StatusArea } from './StatusArea';
+import { StatusArea } from './StatusArea/StatusArea';
 import { Chat } from './chat/Chat';
 
 export enum GameStatus {
@@ -50,7 +50,7 @@ export class PlayArea extends React.Component<IPlayAreaProp, IGameProp> {
         <StatusArea GameState={this.state.GameState} />
         <div className="reset">
           <button className="btn btn-primary" id="Reset" onClick={this.restartGame}>
-            Rest
+            Reset
           </button>
         </div>
 

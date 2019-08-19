@@ -1,7 +1,18 @@
 .status-area {
   grid-area: status;
   background: #455072;
-  height: 38vh;
+  height: 510px;
   width: 14rem;
   border: 3px solid #38a8e9;
+}
+
+.status-area .status-messages{
+  grid-area: status;
+  background: #455072;
+  height: 510px;
+  width: 14rem;
+  border: 3px solid #38a8e9;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  flex-grow: 1;
 }

@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { ChatMessages } from './Chat';
 
 export class ChatSend extends React.Component<any, any> {
   constructor(props: any) {

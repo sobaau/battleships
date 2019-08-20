@@ -88,6 +88,7 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
     this.playerCells = this.addCells(0, 0, 'player');
     this.props.GameState.CurrentShip = 'Carrier';
     this.setState({ CurrentShip: 'Carrier' });
+    this.ships = this.createShipList();
     this.props.updateGameState(this.props.GameState);
     this.setState(prevState => {
       const ShipParts = { ...prevState.ShipParts };
@@ -235,11 +236,11 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
   }
   private createShipList(): Ship[] {
     const ships = [];
-    const carr = new Ship('Carrier', 5, '#a6a6a6');
-    const bat = new Ship('Battleship', 4, '#c7c7c7');
-    const cru = new Ship('Cruiser', 3, '#ded9d9');
-    const sub = new Ship('Submarine', 3, '#e8e1e1');
-    const dest = new Ship('Destroyer', 2, '#ededed');
+    const carr = new Ship('Carrier', 5, '#752323');
+    const bat = new Ship('Battleship', 4, '#442375');
+    const cru = new Ship('Cruiser', 3, '#2e7523');
+    const sub = new Ship('Submarine', 3, '#23756e');
+    const dest = new Ship('Destroyer', 2, '#727523');
     ships.push(carr);
     ships.push(bat);
     ships.push(cru);

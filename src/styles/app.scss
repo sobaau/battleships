@@ -18,12 +18,11 @@ body {
   grid-template-rows: 1rem 1fr 50px 300px;
   grid-template-areas: "nav nav nav nav nav"
     ". enemy player status ."
-    ". . reset . ."
-    ". chat chat . . "
+    ". chat chat reset ."
 
   ;
   align-content: center;
-  border: 3px solid #425b69;
+  //border: 3px solid #425b69;
 
 }
 
@@ -39,29 +38,26 @@ body {
 
 .chat-area {
   grid-area: chat;
-  border: 1px solid #ee0000
+  //border: 1px solid #ee0000
 }
 
 .canvas-enemy {
   grid-area: enemy;
   height: 510px;
   width: 510px;
-  border: 3px solid #8a4444
+  //border: 3px solid #8a4444
 }
 
 .canvas-player {
   grid-area: player;
   height: 510px;
   width: 510px;
-  border: 3px solid #326342;
+  //border: 3px solid #326342; - loayout TODO: Remove
 }
 
 .reset {
   grid-area: reset;
-  display: flex;
-  margin-left: auto;
-  margin-right: 0;
-  border: 3px solid #01f351;
+  //border: 3px solid #01f351;
 
 }
 
@@ -72,5 +68,5 @@ body {
 
 .player-details {
   width: 30rem;
-  border: 1px solid #000000
+  //border: 1px solid #000000
 }

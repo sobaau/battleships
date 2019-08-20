@@ -2,6 +2,7 @@ import * as React from 'react';
 import { ChatBox } from './ChatBox';
 import { ChatSend } from './ChatSend';
 import '../../styles/chat.scss';
+import * as chatHistory from './history.json';
 interface ChatState {
   messages: ChatMessages[];
 }
@@ -15,28 +16,7 @@ export class Chat extends React.Component<any, ChatState> {
   constructor(props: any) {
     super(props);
     this.state = {
-      messages: [
-        {
-          username: 'Hue',
-          text: 'Friendly Text',
-          me: true,
-        },
-        {
-          username: 'Random Name',
-          text: 'Enemy text',
-          me: false,
-        },
-        {
-          username: 'Random Name',
-          text: 'Enemy text 2',
-          me: false,
-        },
-        {
-          username: 'Random Name',
-          text: 'Enemy text 3',
-          me: false,
-        },
-      ],
+      messages: chatHistory.messages,
     };
   }
   public render(): JSX.Element {
@@ -49,15 +29,19 @@ export class Chat extends React.Component<any, ChatState> {
     );
   }
   sendHandler = (message: any): void => {
-    console.log(message);
     const Message = {
-      username: 'Hue', //this.props.username,
+      username: 'Player', //this.props.username,
       text: message,
       me: true,
     };
-    //this.socket.emit(‘client:message’, Message);
-    Message.me = true;
+    const TempMessage = {
+      username: 'Random Name', //this.props.username,
+      text: 'Random message back',
+      me: false,
+    };
+    //send over socket
     this.addMessage(Message);
+    this.addMessage(TempMessage);
   };
   addMessage = (message: any): void => {
     const messages = this.state.messages;

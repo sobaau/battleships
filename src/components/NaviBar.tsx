@@ -18,9 +18,6 @@ export default class NaviBar extends React.Component<any> {
             <LinkContainer to="/info">
               <Nav.Link>Info</Nav.Link>
             </LinkContainer>
-            <LinkContainer to="/leaderboard">
-              <Nav.Link>LeaderBoard</Nav.Link>
-            </LinkContainer>
             <LinkContainer to="/stats">
               <Nav.Link>Stats</Nav.Link>
             </LinkContainer>

@@ -1,0 +1,23 @@
+{
+  "messages": [{
+      "username": "Player",
+      "text": "Friendly Text",
+      "me": true
+    },
+    {
+      "username": "Random Name",
+      "text": "Enemy text",
+      "me": false
+    },
+    {
+      "username": "Random Name",
+      "text": "Enemy text 2",
+      "me": false
+    },
+    {
+      "username": "Random Name",
+      "text": "Enemy text 3",
+      "me": false
+    }
+  ]
+}

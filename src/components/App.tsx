@@ -3,12 +3,12 @@ import { IPlayers } from '../interface/IGameProp';
 import { PlayArea } from './PlayArea';
 import NaviBar from './NaviBar';
 import PlayerDetails from './PlayerDetails/PlayerDetails';
-import LeaderBoard from './LeaderBoard/LeaderBoard';
 import Info from './Info';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { Container, Row } from 'react-bootstrap';
 import { Col } from 'react-bootstrap';
 import { Navbar } from 'react-bootstrap';
+import Stats from './Stats/Stats';
 interface AppState {
   login: boolean;
 }
@@ -32,7 +32,7 @@ export default class App extends React.Component<any, AppState> {
             <Switch>
               <Route path="/" exact render={routeProps => <PlayArea {...routeProps} Players={this.players} />} />
               <Route path="/info" exact component={Info} />
-              <Route path="/leaderboard" exact component={LeaderBoard} />
+              <Route path="/stats" exact component={Stats} />
             </Switch>
           </div>
         </Router>
@@ -41,7 +41,7 @@ export default class App extends React.Component<any, AppState> {
       return (
         <div>
           <Navbar variant="dark" expand="lg">
-          <Navbar.Brand>ReactShips</Navbar.Brand>
+            <Navbar.Brand>ReactShips</Navbar.Brand>
           </Navbar>
           <Container>
             <Row className="justify-content-md-center">

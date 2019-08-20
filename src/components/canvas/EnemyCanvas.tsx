@@ -3,17 +3,19 @@ import { Board } from '../../interface/Board';
 import { BoardCell } from '../../interface/BoardCell';
 import { ICanvas, IMoveListItem } from '../../interface/IGameProp';
 import { GameStatus } from '../PlayArea';
+import * as eboard from './enemyboard.json';
 
-interface IGameState {
+interface EnemyCanvasState {
   GameStatus: GameStatus;
   CurrentTurn: string;
+  ShipsRemaining: number;
   screen: {
     width: number;
     height: number;
   };
   ctx?: CanvasRenderingContext2D;
 }
-export class EnemyCanvas extends React.Component<ICanvas, IGameState> {
+export class EnemyCanvas extends React.Component<ICanvas, EnemyCanvasState> {
   public enemyBoard: Board;
   public lastMoveResult: string;
   private enemyCells: BoardCell[];
@@ -28,6 +30,7 @@ export class EnemyCanvas extends React.Component<ICanvas, IGameState> {
     this.state = {
       GameStatus: props.GameState.GameStatus,
       CurrentTurn: props.GameState.CurrentTurn,
+      ShipsRemaining: props.GameState.EnemyShipsR,
       screen: {
         width: this.width,
         height: this.height,
@@ -37,15 +40,13 @@ export class EnemyCanvas extends React.Component<ICanvas, IGameState> {
     this.enemyBoard = new Board('enemy');
     this.enemyCells = new Array(100);
     this.enemyCells = this.addCells(0, 0, 'enemy');
-    this.tempBoard = [];
-    this.setTempBoard();
+    this.tempBoard = eboard.board;
+    this.setBoard();
     this.lastMoveResult = undefined;
     this.shipCount.clear();
   }
 
   public render(): JSX.Element {
-    console.log('Props in E ');
-    console.log(this.props);
     return (
       <div className="canvas-enemy">
         <canvas id="enemyC" ref={this.canvasRef} width="510" height="510" />
@@ -74,8 +75,7 @@ export class EnemyCanvas extends React.Component<ICanvas, IGameState> {
     });
   }
   private checkStatus(): void {
-    if (this.shipsRemaining === 0) {
-      console.log('Player Wins!');
+    if (this.state.ShipsRemaining === 0) {
       this.props.GameState.GameStatus = 3;
       this.props.GameState.Winner = 'Player Wins!';
       this.props.updateGameState(this.props.GameState);
@@ -101,14 +101,13 @@ export class EnemyCanvas extends React.Component<ICanvas, IGameState> {
     });
   }
   private startGame(): void {
-    console.log('start in enm');
     this.setState({
       GameStatus: GameStatus.Setup,
     });
     this.enemyBoard = new Board('enemy');
     this.enemyCells = new Array(100);
     this.enemyCells = this.addCells(0, 0, 'enemy');
-    this.setTempBoard();
+    this.setBoard();
   }
 
   private drawCells(cells: BoardCell[]): void {
@@ -135,18 +134,17 @@ export class EnemyCanvas extends React.Component<ICanvas, IGameState> {
           cell.c = 'red';
           this.lastMoveResult = 'Hit!';
           const move: IMoveListItem = {
-            Player: 'Enemy',
+            Player: 'Player',
             Move: `Hit!`,
           };
           cell.hit = true;
           this.shipCount.set(cell.part, this.shipCount.get(cell.part) - 1);
           if (this.shipCount.get(cell.part) === 0) {
-            console.log(`${cell.part} was sunk`);
             move.Player = 'Player';
             move.Move = `${cell.part} was sunk`;
-            this.shipsRemaining--;
-            console.log(this.shipsRemaining);
-            if (this.shipsRemaining === 0) {
+            this.props.GameState.EnemyShipsR--;
+            this.setState({ ShipsRemaining: this.state.ShipsRemaining - 1 });
+            if (this.state.ShipsRemaining === 0) {
               this.setState({
                 GameStatus: GameStatus.GameOver,
               });
@@ -171,109 +169,8 @@ export class EnemyCanvas extends React.Component<ICanvas, IGameState> {
     });
   }
 
-  private setTempBoard(): void {
-    this.tempBoard = [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      4,
-      4,
-      4,
-      0,
-      0,
-      0,
-      2,
-      2,
-      2,
-      2,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      3,
-      3,
-      3,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      5,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      5,
-      0,
-      0,
-      0,
-    ];
+  private setBoard(): void {
+    //Import the board from the server.
     for (let i = 0; i < this.tempBoard.length; i++) {
       if (this.tempBoard[i] === 0) {
         this.enemyCells[i].part = 'empty';

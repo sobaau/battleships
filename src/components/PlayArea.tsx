@@ -32,8 +32,6 @@ export class PlayArea extends React.Component<IPlayAreaProp, IGameProp> {
     };
   }
   public render(): JSX.Element {
-    console.log('Game State in PlayA');
-    console.log(this.state);
     return (
       <div className="play-area">
         <EnemyCanvas

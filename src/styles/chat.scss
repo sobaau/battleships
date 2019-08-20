@@ -16,13 +16,18 @@
   overflow-x: hidden;
   flex-grow: 1;
   padding: 20px;
+  background: #1F4360 ;
+  border-left: 1px solid #101011;
+  border-right: 1px solid #101011;
+
+  
 }
 
 .chat-title {
   grid-area: title;
   text-align: center;
   margin: 0;
-  border-bottom: 1px solid #455072;
+  border: 1px solid #101011;
   background-color: #455072;
 }
 
@@ -32,6 +37,11 @@
   overflow: hidden;
   padding: 0 40px;
   flex-shrink: 0;
+  border-bottom: 1px solid #101011;
+  border-left: 1px solid #101011;
+  border-right: 1px solid #101011;
+
+  background-color: #1F4360;
 }
 
 .chat-input input[type="text"] {

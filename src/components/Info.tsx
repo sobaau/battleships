@@ -1,13 +1,13 @@
 import * as React from 'react';
 
-interface InfoProps {};
+interface InfoProps {}
 
-interface InfoState {};
+interface InfoState {}
 
 class Info extends React.Component<InfoProps, InfoState> {
-    public render(): JSX.Element {
-        return (<span>ComponentName</span>);
-    }
+  public render(): JSX.Element {
+    return <span>Info Area</span>;
+  }
 }
 
 export default Info;

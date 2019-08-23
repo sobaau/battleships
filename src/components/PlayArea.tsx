@@ -19,7 +19,7 @@ export class PlayArea extends React.Component<IPlayAreaProp, IGameProp> {
         CurrentShip: null,
         CurrentTurn: null,
         Moves: [],
-        GameStatus: GameStatus.Setup,
+        GameStatus: GameStatus.Playing,
         ResE: false,
         ResP: false,
         Winner: null,

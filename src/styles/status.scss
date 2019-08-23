@@ -1,18 +1,60 @@
-.status-area {
-  grid-area: status;
-  background: #455072;
-  height: 500px;
-  width: 14rem;
-  //border: 3px solid #38a8e9;
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+  }
+
+  45% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0%;
+  }
 }
 
-.status-area .status-messages{
+.status-area {
   grid-area: status;
+  display: flex;
+  flex-direction: column;
   background: #455072;
   height: 500px;
   width: 14rem;
-  border: 3px solid #38a8e9;
-  overflow-y: scroll;
-  overflow-x: hidden;
-  flex-grow: 1;
+  border: 1px solid black;
+
+  .current-turn {
+    height: 30px;
+    align-self: center;
+    justify-content: center;
+
+  }
+
+  .status-messages {
+    background: #455072;
+    border-top-color: 1px solid black;
+    height: 470px;
+    width: 14rem;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    flex-grow: 1;
+    animation-name: fadeInOut;
+    opacity: 1;
+    animation-delay: 0.1s;
+    animation-duration: 8s;
+
+
+    .status-name {
+      background: #2d52c0;
+      width: 70px;
+      border-radius: 10px;
+      padding-left: 2%
+
+
+    }
+
+    .status-msg {
+      padding-left: 8%
+    }
+
+  }
+
 }

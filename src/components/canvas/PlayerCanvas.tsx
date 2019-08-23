@@ -25,7 +25,6 @@ interface IGameState {
 }
 export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
   public playerBoard: Board;
-  public enemyBoard: Board;
   private playerCells: BoardCell[];
   private currentShip: Ship;
   private shipCells: BoardCell[] = [];
@@ -55,7 +54,6 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
     };
     this.ships = this.createShipList();
     this.playerBoard = new Board('player');
-    this.enemyBoard = new Board('enemy');
     this.playerCells = this.addCells(0, 0, 'player');
     this.ship = 0;
   }
@@ -81,10 +79,11 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
     this.setState({
       GameStatus: GameStatus.Setup,
     });
+    this.playerCells = [];
+    this.shipCells = [];
     this.ship = 0;
     this.currentShip = this.ships[this.ship];
     this.playerBoard = new Board('player');
-    this.enemyBoard = new Board('enemy');
     this.playerCells = this.addCells(0, 0, 'player');
     this.props.GameState.CurrentShip = 'Carrier';
     this.setState({ CurrentShip: 'Carrier' });

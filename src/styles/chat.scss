@@ -1,90 +1,81 @@
 .chat-area {
   display: grid;
   height: 300px;
-
   grid-template-columns: 1fr;
   grid-template-rows: 30px 1fr 30px;
   grid-template-areas: "title"
-                        "messages"
-                        "input"
+    "messages"
+    "input"
   ;
-}
 
-.messages {
-  grid-area: messages;
-  overflow-y: scroll;
-  overflow-x: hidden;
-  flex-grow: 1;
-  padding: 20px;
-  background: #1F4360 ;
-  border-left: 1px solid #101011;
-  border-right: 1px solid #101011;
+  .chat-title {
+    grid-area: title;
+    text-align: center;
+    margin: 0;
+    border: 1px solid #101011;
+    background-color: #455072;
+  }
 
-  
-}
+  .chat-input {
+    grid-area: input;
+    position: relative;
+    overflow: hidden;
+    padding: 0 70px;
+    flex-shrink: 0;
+    border-bottom: 1px solid #101011;
+    border-left: 1px solid #101011;
+    border-right: 1px solid #101011;
 
-.chat-title {
-  grid-area: title;
-  text-align: center;
-  margin: 0;
-  border: 1px solid #101011;
-  background-color: #455072;
-}
+    background-color: #1F4360;
 
-.chat-input {
-  grid-area: input;
-  position: relative;
-  overflow: hidden;
-  padding: 0 40px;
-  flex-shrink: 0;
-  border-bottom: 1px solid #101011;
-  border-left: 1px solid #101011;
-  border-right: 1px solid #101011;
+    input[type="text"] {
+      width: 100%;
+      margin-left: -20px;
+      margin-right: -20px;
+    }
+  }
 
-  background-color: #1F4360;
-}
+  .messages {
+    grid-area: messages;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    flex-grow: 1;
+    padding: 20px;
+    background: #1F4360;
+    border-left: 1px solid #101011;
+    border-right: 1px solid #101011;
 
-.chat-input input[type="text"] {
-  width: 100%;
-  margin-left: -20px;
-  margin-right: -20px;
-}
+    .username {
+      font-weight: bold;
+      font-size: 1rem;
+      color: #999;
+      margin-bottom: 5px;
+    }
 
+    .message-body {
+      max-width: 80%;
+      display: inline-block;
+      padding: 3px;
+      margin-left: 1%;
+      background-color: rgb(121, 46, 46);
+      border: 1px;
+      border-radius: 10px;
+      padding-right: 30px;
+    }
 
-.message {
-  margin-bottom: 20px;
-}
-.message-body {
-  max-width: 80%;
-  display: inline-block;
-  padding: 3px;
-  background-color: rgb(121, 46, 46);
-  border: 1px;
-  border-radius: 5px;
-  padding-right: 50px;
-}
-.enemy .message-body{
-  background-color: #8f282f;
+    .enemy {
+      .message-body {
+        background-color: #8f282f;
+        margin-bottom: 5px;
+      }
+    }
 
-}
-.username {
-  font-weight: bold;
-  font-size: 0.9rem;
-  color: #999;
-  margin-bottom: 5px;
-}
-
-.message.from-me .username {
-  display: none;
-}
-
-.message.from-me {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 5px;
-}
-
-.from-me .message-body {
-  background-color: #464478;
-  color: rgb(255, 255, 255);
+    .player-message {
+      .message-body {
+        background-color: #464478;
+        margin-bottom: 5px;
+        color: rgb(255, 255, 255);
+      }
+    }
+  }
 }

@@ -3,9 +3,11 @@ import { ChatBox } from './ChatBox';
 import { ChatSend } from './ChatSend';
 import '../../styles/chat.scss';
 import * as chatHistory from './history.json';
+
 interface ChatState {
   messages: ChatMessages[];
 }
+
 export interface ChatMessages {
   username: string;
   text: string;
@@ -18,7 +20,9 @@ export class Chat extends React.Component<any, ChatState> {
     this.state = {
       messages: chatHistory.messages,
     };
+    //Add listener here for chat messages from the server
   }
+
   public render(): JSX.Element {
     return (
       <div className="chat-area" id="chat">
@@ -28,21 +32,24 @@ export class Chat extends React.Component<any, ChatState> {
       </div>
     );
   }
+
   sendHandler = (message: any): void => {
     const Message = {
       username: 'Player', //this.props.username,
       text: message,
       me: true,
     };
+    //temp demo message
     const TempMessage = {
-      username: 'Random Name', //this.props.username,
+      username: 'Random Name',
       text: 'Random message back',
       me: false,
     };
-    //send over socket
+    //send player message over socket
     this.addMessage(Message);
     this.addMessage(TempMessage);
   };
+
   addMessage = (message: any): void => {
     const messages = this.state.messages;
     messages.push(message);

@@ -5,8 +5,6 @@ import NaviBar from './NaviBar';
 import PlayerDetails from './PlayerDetails/PlayerDetails';
 import Info from './Info';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { Container, Row } from 'react-bootstrap';
-import { Col } from 'react-bootstrap';
 import { Navbar } from 'react-bootstrap';
 import Stats from './Stats/Stats';
 interface AppState {
@@ -20,7 +18,7 @@ export default class App extends React.Component<any, AppState> {
   constructor(props: any) {
     super(props);
     this.state = {
-      login: true,
+      login: false,
     };
   }
   public render(): JSX.Element {
@@ -43,13 +41,9 @@ export default class App extends React.Component<any, AppState> {
           <Navbar variant="dark" expand="lg">
             <Navbar.Brand>ReactShips</Navbar.Brand>
           </Navbar>
-          <Container>
-            <Row className="justify-content-md-center">
-              <Col md="auto">
-                <PlayerDetails handleLogin={this.handleLogin} />
-              </Col>
-            </Row>
-          </Container>
+          <div className="login-container">
+            <PlayerDetails handleLogin={this.handleLogin} />
+          </div>
         </div>
       );
     }

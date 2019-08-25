@@ -26,16 +26,6 @@ body {
 
 }
 
-.message-list {
-  border: 1px solid #000000;
-  background: #455072;
-  padding: 0;
-  list-style: none;
-  width: 400px;
-}
-
-
-
 .chat-area {
   grid-area: chat;
   //border: 1px solid #ee0000
@@ -58,15 +48,11 @@ body {
 .reset {
   grid-area: reset;
   //border: 3px solid #01f351;
-
 }
 
-.player-details input {
-  width: 100%;
-  height: 100%;
-}
-
-.player-details {
-  width: 30rem;
-  //border: 1px solid #000000
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }

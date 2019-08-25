@@ -18,13 +18,13 @@ export class ChatSend extends React.Component<any, any> {
           onChange={this.handleText}
           id="chat-box"
           value={this.state.chatInput}
-          placeholder="Write a message"
+          placeholder="Type a message and press enter..."
           required
         />
       </form>
     );
   }
-  handleText(e): void {
+  handleText(e: React.ChangeEvent<HTMLInputElement>): void {
     this.setState({ chatInput: e.target.value });
   }
   handleSubmit(e: any): void {

@@ -1,93 +1,63 @@
 import * as React from 'react';
-import { Button, Container, Row } from 'react-bootstrap';
-import { Col } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import '../../styles/login.scss';
-interface ComponentNameProps {
+import { PlayerHeader } from './PlayerHeader';
+interface PlayerDetailsProps {
   handleLogin?: any;
 }
 
-interface ComponentNameState {
+interface PlayerDetailsState {
   playerName: string;
-  roomID: number;
+  roomID: string;
 }
 
-class PlayerDetails extends React.Component<ComponentNameProps, any> {
+class PlayerDetails extends React.Component<PlayerDetailsProps, any> {
   constructor(props: any) {
     super(props);
     this.state = {
-      playerName: undefined,
-      roomId: undefined,
+      playerName: '',
+      roomID: '',
     };
   }
   public render(): JSX.Element {
     return (
       <form className="player-details" onSubmit={this.handleSubmit}>
-        <Container>
-          <Row>
-            <Col>
-              <PlayerHeader />
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <label>
-                <span className="player-name">Please Enter your player name</span>
-              </label>
-              <Row>
-                <Col>
-                  <input
-                    type="text"
-                    name="playerName"
-                    required
-                    onChange={this.handleChange}
-                    value={this.state.playerName}
-                  />
-                </Col>
-              </Row>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <label>
-                <span id="room-id">Room ID</span>
-              </label>
-              <Row>
-                <Col>
-                  <input
-                    type="text"
-                    className="room-input"
-                    required
-                    name="roomId"
-                    onChange={this.handleChange}
-                    value={this.state.roomId}
-                  />
-                </Col>
-              </Row>
-            </Col>
-          </Row>
-          <Row className="justify-content-md-center">
-            <Col md="auto">
-              <Button variant="outline-success" type="submit">
-                Submit
-              </Button>
-            </Col>
-          </Row>
-        </Container>
+        <PlayerHeader />
+
+        <label>
+          <span className="player-name">Please Enter your player name</span>
+        </label>
+
+        <input type="text" name="playerName" required onChange={this.handleChange} value={this.state.playerName} />
+
+        <label>
+          <span id="room-id">Room ID</span>
+        </label>
+        <input
+          type="text"
+          className="room-input"
+          required
+          name="roomID"
+          onChange={this.handleChange}
+          value={this.state.roomID}
+        />
+
+        <Button variant="outline-success" type="submit">
+          Submit
+        </Button>
       </form>
     );
   }
+
   handleSubmit = (e: any): void => {
     e.preventDefault();
     this.props.handleLogin(true);
   };
-  handleChange = (e: any): void => {
+
+  handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     console.log(e.target);
     this.setState({ [e.target.name]: e.target.value });
   };
 }
 
 export default PlayerDetails;
-
-const PlayerHeader = (): JSX.Element => {
-  return <h1 id="player-h">Player Details</h1>;
-};

@@ -1,0 +1,27 @@
+.player-details {
+  display: flex;
+  flex-direction: column;
+  width: 30rem;
+  margin-top: 10%;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 8px 0 rgba(117, 117, 117, 0.212), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+
+  border: 1px solid #000000;
+  background-color: #1F4360;
+  border-radius: 2%;
+  .player-h {
+    align-self: center;
+  }
+  input {
+    width: 90%;
+    height: 100%;
+  }
+  button{
+    width: auto;
+    background-color: rgb(122, 135, 145);
+    border-color: rgb(127, 139, 150);
+    color: black;
+    margin: 11px;
+  }
+}

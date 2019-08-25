@@ -5,7 +5,7 @@ import ChatMessage from './ChatMessage';
 interface IChatProps {
   messages: ChatMessages[];
 }
-export class ChatBox extends React.Component<any, any> {
+export class ChatBox extends React.Component<IChatProps, any> {
   public render(): JSX.Element {
     const messages = this.props.messages.map((message, i) => {
       return <ChatMessage key={i} username={message.username} text={message.text} me={message.me} />;
@@ -18,7 +18,7 @@ export class ChatBox extends React.Component<any, any> {
     );
   }
   componentDidUpdate(): void {
-    const objDiv = document.getElementById('messageList');
-    objDiv.scrollTop = objDiv.scrollHeight;
+    const chatDiv = document.getElementById('messageList');
+    chatDiv.scrollTop = chatDiv.scrollHeight;
   }
 }

@@ -100,6 +100,7 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
     });
     this.setState({ ShipRemaining: 5, clicks: 0 });
   }
+
   private update(): void {
     this.drawCells(this.playerCells);
     if (this.props.GameState.ResP) {
@@ -117,6 +118,7 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
       this.update();
     });
   }
+
   private checkRemainingShips(): void {
     this.setState({
       ShipRemaining: this.state.ShipRemaining - 1,
@@ -129,6 +131,7 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
       this.props.updateGameState(this.props.GameState);
     }
   }
+
   private playGame(): void {
     const randomCell: number = Math.floor(Math.random() * (99 - 0 + 1)) + 0;
     const cell = this.playerCells[randomCell];
@@ -204,7 +207,6 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
       this.playGame();
     }
   }
-  private endGame(): void {}
 
   private setEvents(): void {
     const canvas = this.canvasRef.current;
@@ -264,6 +266,7 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
       }
     });
   }
+
   private addCells(x: number, y: number, s: string): BoardCell[] {
     const newArray: BoardCell[] = new Array(100);
     for (let i = 0; i < 10; i++) {
@@ -274,6 +277,7 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
     }
     return newArray;
   }
+
   private finalCheck(): void {
     let direction: string;
     const cellCheck = this.playerCells.filter(cell => cell.part === this.currentShip.name);
@@ -334,6 +338,7 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
       }
     }
   }
+
   private toggleCell(arr: BoardCell[], x: number, y: number): void {
     const ctx = this.state.ctx;
     if (this.state.GameStatus === 0) {
@@ -358,11 +363,13 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
       });
     }
   }
+
   private checkValid(): void {
     if (!this.checkValidCell()) {
       this.clearInvalid();
     }
   }
+
   private clearInvalid(): void {
     this.props.GameState.SetupMessages = 'Invalid Ship Placement';
     this.props.updateGameState(this.props.GameState);
@@ -374,25 +381,26 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
     this.shipCells = [];
     this.setState({ clicks: 0 });
   }
+
   private checkValidCell(): boolean {
-    let dirc: string;
+    let direction: string;
     if (this.shipCells.length === 1) {
       return true;
     } else if (this.shipCells.length > 1) {
       if (this.shipCells[0].x === this.shipCells[1].x) {
-        dirc = 'h';
+        direction = 'h';
       } else if (this.shipCells[0].y === this.shipCells[1].y) {
-        dirc = 'v';
+        direction = 'v';
       } else {
         return false;
       }
 
       for (let i = 0; i < this.shipCells.length; i++) {
-        if (dirc === 'h') {
+        if (direction === 'h') {
           if (this.shipCells[0].x !== this.shipCells[i].x) {
             return false;
           }
-        } else if (dirc === 'v') {
+        } else if (direction === 'v') {
           if (this.shipCells[0].y !== this.shipCells[i].y) {
             return false;
           }
@@ -415,8 +423,9 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
       }
     });
   }
-  private exportBoard(): any {
+
+  private exportBoard(): void {
     //Export the players board to the server.
-    return this.playerBoard;
   }
+  private endGame(): void {}
 }

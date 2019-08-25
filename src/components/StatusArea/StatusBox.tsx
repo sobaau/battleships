@@ -6,7 +6,7 @@ export interface IStatusBoxProps {}
 
 export default class StatusBox extends React.Component<any, any> {
   public render(): JSX.Element {
-    const messages: IMoveListItem[] = this.props.messages.map((message, i) => {
+    const messages: IMoveListItem[] = this.props.messages.map((message:IMoveListItem, i:number) => {
       return <StatusMessage key={i} player={message.Player} move={message.Move} />;
     });
     return (
@@ -16,7 +16,7 @@ export default class StatusBox extends React.Component<any, any> {
     );
   }
   componentDidUpdate(): void {
-    const objDiv = document.getElementById('status-list');
-    objDiv.scrollTop = objDiv.scrollHeight;
+    const statusDiv = document.getElementById('status-list');
+    statusDiv.scrollTop = statusDiv.scrollHeight;
   }
 }

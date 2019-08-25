@@ -21,7 +21,6 @@ export class EnemyCanvas extends React.Component<ICanvas, EnemyCanvasState> {
   private enemyCells: BoardCell[];
   private tempBoard: number[];
   private shipCount: Map<string, number>;
-  private shipsRemaining = 5;
   private height = 510;
   private width = 510;
   private canvasRef = React.createRef<HTMLCanvasElement>();
@@ -35,14 +34,15 @@ export class EnemyCanvas extends React.Component<ICanvas, EnemyCanvasState> {
         width: this.width,
         height: this.height,
       },
-      ctx: null,
+      ctx: undefined,
     };
+    this.shipCount = new Map();
     this.enemyBoard = new Board('enemy');
     this.enemyCells = new Array(100);
     this.enemyCells = this.addCells(0, 0, 'enemy');
     this.tempBoard = eboard.board;
     this.setBoard();
-    this.lastMoveResult = undefined;
+    this.lastMoveResult = " ";
     this.shipCount.clear();
   }
 
@@ -53,6 +53,7 @@ export class EnemyCanvas extends React.Component<ICanvas, EnemyCanvasState> {
       </div>
     );
   }
+
   public componentDidMount(): void {
     const ctx = this.canvasRef.current.getContext('2d');
     this.setState({ ctx });
@@ -62,6 +63,7 @@ export class EnemyCanvas extends React.Component<ICanvas, EnemyCanvasState> {
       this.update();
     });
   }
+
   private update(): void {
     if (this.props.GameState.ResE) {
       this.startGame();
@@ -74,6 +76,7 @@ export class EnemyCanvas extends React.Component<ICanvas, EnemyCanvasState> {
       this.update();
     });
   }
+
   private checkStatus(): void {
     if (this.state.ShipsRemaining === 0) {
       this.props.GameState.GameStatus = 3;
@@ -100,6 +103,7 @@ export class EnemyCanvas extends React.Component<ICanvas, EnemyCanvasState> {
       }
     });
   }
+
   private startGame(): void {
     this.setState({
       GameStatus: GameStatus.Setup,
@@ -117,6 +121,7 @@ export class EnemyCanvas extends React.Component<ICanvas, EnemyCanvasState> {
       ctx.fillRect(cell.x + 1, cell.y + 1, cell.w - 2, cell.w - 2);
     });
   }
+
   private addCells(x: number, y: number, s: string): BoardCell[] {
     const narr: BoardCell[] = new Array(100);
     for (let i = 0; i < 10; i++) {
@@ -127,6 +132,7 @@ export class EnemyCanvas extends React.Component<ICanvas, EnemyCanvasState> {
     }
     return narr;
   }
+
   private toggleCell(arr: BoardCell[], x: number, y: number): void {
     arr.forEach(cell => {
       if (cell.contains(x, y)) {

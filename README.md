@@ -15,6 +15,7 @@ ships. If a ship is hit a square will turn red and if its a miss the square will
 player to sink all the other players ships is the winner of the game.
 
 Currently hosted at : https://reactships.herokuapp.com
+Reop: https://github.com/sobaau/battleships
 
 By David Preston.
 

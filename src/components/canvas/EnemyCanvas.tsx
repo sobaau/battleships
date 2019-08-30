@@ -43,7 +43,7 @@ export class EnemyCanvas extends React.Component<ICanvas, EnemyCanvasState> {
     this.enemyCells = this.addCells(0, 0, 'enemy');
     this.tempBoard = eboard.board;
     this.setBoard();
-    this.lastMoveResult = " ";
+    this.lastMoveResult = ' ';
     this.shipCount.clear();
   }
 
@@ -81,6 +81,7 @@ export class EnemyCanvas extends React.Component<ICanvas, EnemyCanvasState> {
     if (this.props.GameState.ResE) {
       this.startGame();
       this.props.GameState.ResE = false;
+      this.props.GameState.GameStatus = GameStatus.Setup;
       this.props.updateGameState(this.props.GameState);
     }
     this.drawCells(this.enemyCells);
@@ -114,7 +115,7 @@ export class EnemyCanvas extends React.Component<ICanvas, EnemyCanvasState> {
    */
   private checkStatus(): void {
     if (this.state.ShipsRemaining === 0) {
-      this.props.GameState.GameStatus = 3;
+      this.props.GameState.GameStatus = GameStatus.GameOver;
       this.props.GameState.Winner = 'Player Wins!';
       this.props.updateGameState(this.props.GameState);
     }
@@ -144,7 +145,6 @@ export class EnemyCanvas extends React.Component<ICanvas, EnemyCanvasState> {
       }
     });
   }
-
 
   /**
    * Draws the cells within the BoardCell array.

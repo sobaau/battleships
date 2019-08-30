@@ -59,7 +59,6 @@ class PlayerDetails extends React.Component<PlayerDetailsProps, any> {
   };
 
   private handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    console.log(e.target);
     this.setState({ [e.target.name]: e.target.value });
   };
 }

@@ -124,6 +124,7 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
     this.playerBoard = new Board('player');
     this.playerCells = this.addCells(0, 0, 'player');
     this.props.GameState.CurrentShip = 'Carrier';
+    this.props.GameState.GameStatus = GameStatus.Setup;
     this.setState({ CurrentShip: 'Carrier' });
     this.ships = this.createShipList();
     this.props.updateGameState(this.props.GameState);

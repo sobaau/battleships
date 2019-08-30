@@ -96,7 +96,6 @@ export class PlayArea extends React.Component<IPlayAreaProp, IGameProp> {
   private restartGame = (): void => {
     this.setState((prevState: any) => {
       const GameState: IGameState = { ...prevState.GameState };
-      console.log(prevState);
       GameState.CurrentShip = null;
       GameState.CurrentTurn = null;
       GameState.Moves = [];

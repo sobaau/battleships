@@ -19,18 +19,19 @@ export class PlayArea extends React.Component<IPlayAreaProp, IGameProp> {
         CurrentShip: null,
         CurrentTurn: null,
         Moves: [],
-        GameStatus: GameStatus.Playing,
+        GameStatus: GameStatus.Setup,
         ResE: false,
         ResP: false,
         Winner: null,
-        PlayerName: this.props.Players.PlayerName,
-        EnemyName: this.props.Players.EnemyName,
+        PlayerName: this.props.player,
+        EnemyName: this.props.enemy,
         EnemyShipsR: 5,
         PlayerShipsR: 5,
         SetupMessages: null,
       },
     };
   }
+
   public render(): JSX.Element {
     return (
       <div className="play-area">
@@ -52,10 +53,17 @@ export class PlayArea extends React.Component<IPlayAreaProp, IGameProp> {
           </button>
         </div>
 
-        <Chat />
+        <Chat username={this.state.GameState.PlayerName} />
       </div>
     );
   }
+
+  /**
+   * Updates the Game State with the provided data.
+   *
+   * @private
+   * @memberof PlayArea
+   */
   private updateGameState = (dataFromChild: IGameState): void => {
     this.setState((prevState: any) => {
       let GameState: IGameState = { ...prevState.GameState };
@@ -63,6 +71,13 @@ export class PlayArea extends React.Component<IPlayAreaProp, IGameProp> {
       return { GameState };
     });
   };
+
+  /**
+   * Updates the move list for the players
+   *
+   * @private
+   * @memberof PlayArea
+   */
   private updateMoves = (moveUpdate: IMoveListItem): void => {
     this.setState((prevState: any) => {
       const GameState: IGameState = { ...prevState.GameState };
@@ -70,6 +85,14 @@ export class PlayArea extends React.Component<IPlayAreaProp, IGameProp> {
       return { GameState };
     });
   };
+
+  /**
+   * Flags the game to restart for the two player canvas's and then resets the
+   * state of the game.
+   *
+   * @private
+   * @memberof PlayArea
+   */
   private restartGame = (): void => {
     this.setState((prevState: any) => {
       const GameState: IGameState = { ...prevState.GameState };
@@ -81,8 +104,6 @@ export class PlayArea extends React.Component<IPlayAreaProp, IGameProp> {
       GameState.ResE = false;
       GameState.ResP = false;
       GameState.Winner = null;
-      GameState.PlayerName = this.props.Players.PlayerName;
-      GameState.EnemyName = this.props.Players.EnemyName;
       GameState.EnemyShipsR = 5;
       GameState.PlayerShipsR = 5;
       GameState.ResE = true;
@@ -90,4 +111,13 @@ export class PlayArea extends React.Component<IPlayAreaProp, IGameProp> {
       return { GameState };
     });
   };
+
+  /**
+   * Load the game state from the server if this is a brand new game.
+   * #TODO:
+   *
+   * @private
+   * @memberof PlayArea
+   */
+  private loadGame = (): void => {};
 }

@@ -1,0 +1,33 @@
+.info-area {
+  color: rgba(255, 255, 255, 0.849);
+  width: 800px;
+  display: flex;
+  background-color: #1F4360;
+  align-content: center;
+  flex-direction: column;
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 4px 8px 0 rgba(117, 117, 117, 0.212), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+
+  .info-heading {
+    align-self: center;
+  }
+
+  .info-text {}
+
+  .ship-table-div {
+    .ship-table {
+      th,
+      td {
+        border-bottom: 1px solid #ddd;
+
+        padding: 1%;
+        text-align: left;
+      }
+    }
+
+    margin: 1%;
+  }
+}

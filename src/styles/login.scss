@@ -6,22 +6,36 @@
   justify-content: center;
   align-items: center;
   box-shadow: 0 4px 8px 0 rgba(117, 117, 117, 0.212), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-
   border: 1px solid #000000;
   background-color: #1F4360;
   border-radius: 2%;
+
   .player-h {
     align-self: center;
   }
+
+  .player-name {}
+
+  .room-id {
+    margin-top: 8%;
+  }
+
   input {
     width: 90%;
     height: 100%;
   }
-  button{
+
+  button {
     width: auto;
-    background-color: rgb(122, 135, 145);
+    background-color: rgb(221, 238, 252);
     border-color: rgb(127, 139, 150);
     color: black;
     margin: 11px;
+  }
+
+  button:hover {
+    background-color: rgb(67, 105, 136);
+    border-color: rgb(67, 105, 136);
+    color: rgb(247, 255, 226);
   }
 }

@@ -4,6 +4,8 @@ import '../../styles/login.scss';
 import { PlayerHeader } from './PlayerHeader';
 interface PlayerDetailsProps {
   handleLogin?: any;
+  player?: any;
+  room?: any;
 }
 
 interface PlayerDetailsState {
@@ -25,13 +27,13 @@ class PlayerDetails extends React.Component<PlayerDetailsProps, any> {
         <PlayerHeader />
 
         <label>
-          <span className="player-name">Please Enter your player name</span>
+          <span className="player-name">Please Enter your Player Name</span>
         </label>
 
         <input type="text" name="playerName" required onChange={this.handleChange} value={this.state.playerName} />
 
         <label>
-          <span id="room-id">Room ID</span>
+          <span className="room-id">Room ID</span> {/** Room ID used to connect to other players*/}
         </label>
         <input
           type="text"
@@ -49,12 +51,14 @@ class PlayerDetails extends React.Component<PlayerDetailsProps, any> {
     );
   }
 
-  handleSubmit = (e: any): void => {
+  private handleSubmit = (e: any): void => {
     e.preventDefault();
+    this.props.player(this.state.playerName);
+    this.props.room(this.state.roomID);
     this.props.handleLogin(true);
   };
 
-  handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+  private handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     console.log(e.target);
     this.setState({ [e.target.name]: e.target.value });
   };

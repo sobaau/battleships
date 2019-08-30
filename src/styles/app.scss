@@ -22,20 +22,20 @@ body {
 
   ;
   align-content: center;
-  //border: 3px solid #425b69;
+  //border: 3px solid #425b69; - loayout TODO: Remove
 
 }
 
 .chat-area {
   grid-area: chat;
-  //border: 1px solid #ee0000
+  //border: 1px solid #ee0000 - loayout TODO: Remove
 }
 
 .canvas-enemy {
   grid-area: enemy;
   height: 510px;
   width: 510px;
-  //border: 3px solid #8a4444
+  //border: 3px solid #8a4444 - loayout TODO: Remove
 }
 
 .canvas-player {
@@ -47,7 +47,7 @@ body {
 
 .reset {
   grid-area: reset;
-  //border: 3px solid #01f351;
+  //border: 3px solid #01f351; - loayout TODO: Remove
 }
 
 .login-container {

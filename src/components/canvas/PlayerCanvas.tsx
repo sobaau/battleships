@@ -23,6 +23,7 @@ interface IGameState {
   clicks: number;
   ctx?: CanvasRenderingContext2D;
 }
+
 export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
   public playerBoard: Board;
   private playerCells: BoardCell[];
@@ -65,6 +66,12 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
       </div>
     );
   }
+
+  /**
+   * Sets the context for the boards canvas and then starts the main animation loop.
+   *
+   * @memberof EnemyCanvas
+   */
   public componentDidMount(): void {
     const ctx = this.canvasRef.current.getContext('2d');
     this.setState({ ctx });
@@ -75,6 +82,37 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
     });
   }
 
+  /**
+   * Main drawloop. Resets the game if flagged and then calls the update functions
+   * for the game.
+   *
+   * @private
+   * @memberof PlayerCanvas
+   */
+  private update(): void {
+    this.drawCells(this.playerCells);
+    if (this.props.GameState.ResP) {
+      this.startGame();
+      this.props.GameState.ResP = false;
+      this.props.updateGameState(this.props.GameState);
+    }
+    if (this.props.GameState.GameStatus === 1 && this.props.GameState.CurrentTurn === 'Enemy') {
+      this.playGame();
+    }
+    if (this.state.GameStatus === 2) {
+      // #TODO ENDGAME
+    }
+    requestAnimationFrame(() => {
+      this.update();
+    });
+  }
+
+  /**
+   * Sets up the game for the player and also resets the game when flagged.
+   *
+   * @private
+   * @memberof PlayerCanvas
+   */
   private startGame(): void {
     this.setState({
       GameStatus: GameStatus.Setup,
@@ -101,24 +139,12 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
     this.setState({ ShipRemaining: 5, clicks: 0 });
   }
 
-  private update(): void {
-    this.drawCells(this.playerCells);
-    if (this.props.GameState.ResP) {
-      this.startGame();
-      this.props.GameState.ResP = false;
-      this.props.updateGameState(this.props.GameState);
-    }
-    if (this.props.GameState.GameStatus === 1 && this.props.GameState.CurrentTurn === 'Enemy') {
-      this.playGame();
-    }
-    if (this.state.GameStatus === 2) {
-      // #TODO ENDGAME
-    }
-    requestAnimationFrame(() => {
-      this.update();
-    });
-  }
-
+  /**
+   * Checks the remaining ships for the player. If none are Left the enemy has won.
+   *
+   * @private
+   * @memberof PlayerCanvas
+   */
   private checkRemainingShips(): void {
     this.setState({
       ShipRemaining: this.state.ShipRemaining - 1,
@@ -132,6 +158,13 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
     }
   }
 
+  /**
+   * Main gameloop with dummy AI. AI picks cells that haven't been
+   * selected at random
+   *
+   * @private
+   * @memberof PlayerCanvas
+   */
   private playGame(): void {
     const randomCell: number = Math.floor(Math.random() * (99 - 0 + 1)) + 0;
     const cell = this.playerCells[randomCell];
@@ -208,6 +241,12 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
     }
   }
 
+  /**
+   * Sets the events for mouse clicks and mouse overs.
+   *
+   * @private
+   * @memberof PlayerCanvas
+   */
   private setEvents(): void {
     const canvas = this.canvasRef.current;
     canvas.addEventListener('click', event => {
@@ -231,10 +270,25 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
       }
     });
   }
+
+  /**
+   * Update which ship is being placed in the game state.
+   *
+   * @private
+   * @memberof PlayerCanvas
+   */
   private updateCurrentShip(): void {
     this.props.GameState.CurrentShip = this.state.CurrentShip;
     this.props.updateGameState(this.props.GameState);
   }
+
+  /**
+   * Generates and sets the ship parts for the player.
+   *
+   * @private
+   * @returns {Ship[]}
+   * @memberof PlayerCanvas
+   */
   private createShipList(): Ship[] {
     const ships = [];
     const carr = new Ship('Carrier', 5, '#752323');
@@ -250,6 +304,13 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
     return ships;
   }
 
+  /**
+   * Draws the cells within the BoardCell array.
+   *
+   * @private
+   * @param {BoardCell[]} cells
+   * @memberof PlayerCanvas
+   */
   private drawCells(cells: BoardCell[]): void {
     const ctx = this.state.ctx;
     cells.forEach(cell => {
@@ -267,6 +328,16 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
     });
   }
 
+  /**
+   * Generates the BoardCell array.
+   *
+   * @private
+   * @param {number} x
+   * @param {number} y
+   * @param {string} s
+   * @returns {BoardCell[]}
+   * @memberof PlayerCanvas
+   */
   private addCells(x: number, y: number, s: string): BoardCell[] {
     const newArray: BoardCell[] = new Array(100);
     for (let i = 0; i < 10; i++) {
@@ -278,33 +349,13 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
     return newArray;
   }
 
-  private finalCheck(): void {
-    let direction: string;
-    const cellCheck = this.playerCells.filter(cell => cell.part === this.currentShip.name);
-    if (cellCheck[0].x === cellCheck[1].x) {
-      direction = 'v';
-    } else if (cellCheck[0].y === cellCheck[1].y) {
-      direction = 'h';
-    }
-    for (let i = 0, n = 1; i < cellCheck.length - 1; i++, n++) {
-      if (direction === 'h') {
-        if (cellCheck[i].x + 50 === cellCheck[n].x || cellCheck[i].x - 50 === cellCheck[n].x) {
-          continue;
-        }
-
-        this.clearInvalid();
-        return;
-      }
-      if (direction === 'v') {
-        if (cellCheck[i].y + 50 === cellCheck[n].y || cellCheck[i].y - 50 === cellCheck[n].y) {
-          continue;
-        }
-        this.clearInvalid();
-        return;
-      }
-    }
-  }
-
+  /**
+   * Check which ship the player should be currently placing and then starts the
+   * game when the last ship is placed.
+   *
+   * @private
+   * @memberof PlayerCanvas
+   */
   private checkShipTurn(): void {
     if (this.shipCells.length === this.currentShip.size) {
       if (this.currentShip.name === 'Destroyer') {
@@ -339,6 +390,15 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
     }
   }
 
+  /**
+   * Toggles the BoardCells depending what ship the player is placing.
+   *
+   * @private
+   * @param {BoardCell[]} arr
+   * @param {number} x
+   * @param {number} y
+   * @memberof PlayerCanvas
+   */
   private toggleCell(arr: BoardCell[], x: number, y: number): void {
     const ctx = this.state.ctx;
     if (this.state.GameStatus === 0) {
@@ -352,6 +412,7 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
         }
       });
     } else {
+      // #TODO: Can probably remove this old code.
       arr.forEach(cell => {
         if (cell.contains(x, y) && this.state.clicks !== this.currentShip.size && cell.part === 'empty') {
           this.shipCells.push(cell);
@@ -370,6 +431,12 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
     }
   }
 
+  /**
+   * Resets the cells the players ship is in if its invalid.
+   *
+   * @private
+   * @memberof PlayerCanvas
+   */
   private clearInvalid(): void {
     this.props.GameState.SetupMessages = 'Invalid Ship Placement';
     this.props.updateGameState(this.props.GameState);
@@ -382,6 +449,16 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
     this.setState({ clicks: 0 });
   }
 
+  /**
+   * Checks to see if there are any invalid moves from the player once their ship
+   * has been replaced. This is done by checking their direction it was placed
+   * and flagging it invalid if its invalid if they are not along the right x/y
+   * location
+   *
+   * @private
+   * @returns {boolean}
+   * @memberof PlayerCanvas
+   */
   private checkValidCell(): boolean {
     let direction: string;
     if (this.shipCells.length === 1) {
@@ -412,6 +489,50 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
     return false;
   }
 
+  /**
+   * Last check to see if the player has correctly placed the ship. Every cell
+   * is checked within 50 pixels to make sure they are all connected.
+   *
+   * @private
+   * @returns {void}
+   * @memberof PlayerCanvas
+   */
+  private finalCheck(): void {
+    let direction: string;
+    const cellCheck = this.playerCells.filter(cell => cell.part === this.currentShip.name);
+    if (cellCheck[0].x === cellCheck[1].x) {
+      direction = 'v';
+    } else if (cellCheck[0].y === cellCheck[1].y) {
+      direction = 'h';
+    }
+    for (let i = 0, n = 1; i < cellCheck.length - 1; i++, n++) {
+      if (direction === 'h') {
+        if (cellCheck[i].x + 50 === cellCheck[n].x || cellCheck[i].x - 50 === cellCheck[n].x) {
+          continue;
+        }
+
+        this.clearInvalid();
+        return;
+      }
+      if (direction === 'v') {
+        if (cellCheck[i].y + 50 === cellCheck[n].y || cellCheck[i].y - 50 === cellCheck[n].y) {
+          continue;
+        }
+        this.clearInvalid();
+        return;
+      }
+    }
+  }
+
+  /**
+   * Creates a hover type effect over the given boardcell.
+   *
+   * @private
+   * @param {BoardCell[]} arr
+   * @param {number} x
+   * @param {number} y
+   * @memberof EnemyCanvas
+   */
   private hoverEffect(arr: BoardCell[], x: number, y: number): void {
     const ctx = this.state.ctx;
     arr.forEach(cell => {
@@ -424,8 +545,21 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
     });
   }
 
+  /**
+   * TODO
+   *
+   * @private
+   * @memberof PlayerCanvas
+   */
   private exportBoard(): void {
     //Export the players board to the server.
   }
+
+  /**
+   * TODO
+   *
+   * @private
+   * @memberof PlayerCanvas
+   */
   private endGame(): void {}
 }

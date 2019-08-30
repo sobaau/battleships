@@ -15,6 +15,7 @@ interface EnemyCanvasState {
   };
   ctx?: CanvasRenderingContext2D;
 }
+
 export class EnemyCanvas extends React.Component<ICanvas, EnemyCanvasState> {
   public enemyBoard: Board;
   public lastMoveResult: string;
@@ -54,6 +55,11 @@ export class EnemyCanvas extends React.Component<ICanvas, EnemyCanvasState> {
     );
   }
 
+  /**
+   * Sets the context for the boards canvas and then starts the main animation loop.
+   *
+   * @memberof EnemyCanvas
+   */
   public componentDidMount(): void {
     const ctx = this.canvasRef.current.getContext('2d');
     this.setState({ ctx });
@@ -64,6 +70,13 @@ export class EnemyCanvas extends React.Component<ICanvas, EnemyCanvasState> {
     });
   }
 
+  /**
+   * Main Gameloop. Checks to see if the game is set to restart. If it is the game
+   * is restarted. After this the cells are drawn and the main game loop is run.
+   *
+   * @private
+   * @memberof EnemyCanvas
+   */
   private update(): void {
     if (this.props.GameState.ResE) {
       this.startGame();
@@ -77,6 +90,28 @@ export class EnemyCanvas extends React.Component<ICanvas, EnemyCanvasState> {
     });
   }
 
+  /**
+   * Starts the game for the enemies board. Also used to reset a game.
+   *
+   * @private
+   * @memberof EnemyCanvas
+   */
+  private startGame(): void {
+    this.setState({
+      GameStatus: GameStatus.Setup,
+    });
+    this.enemyBoard = new Board('enemy');
+    this.enemyCells = new Array(100);
+    this.enemyCells = this.addCells(0, 0, 'enemy');
+    this.setBoard();
+  }
+
+  /**
+   * Checks to see if the player has won the game or not.
+   *
+   * @private
+   * @memberof EnemyCanvas
+   */
   private checkStatus(): void {
     if (this.state.ShipsRemaining === 0) {
       this.props.GameState.GameStatus = 3;
@@ -85,6 +120,12 @@ export class EnemyCanvas extends React.Component<ICanvas, EnemyCanvasState> {
     }
   }
 
+  /**
+   * Sets the onclick and on mousemove events for the canvas
+   *
+   * @private
+   * @memberof EnemyCanvas
+   */
   private setEvents(): void {
     const canvas = this.canvasRef.current;
     canvas.addEventListener('click', event => {
@@ -104,16 +145,14 @@ export class EnemyCanvas extends React.Component<ICanvas, EnemyCanvasState> {
     });
   }
 
-  private startGame(): void {
-    this.setState({
-      GameStatus: GameStatus.Setup,
-    });
-    this.enemyBoard = new Board('enemy');
-    this.enemyCells = new Array(100);
-    this.enemyCells = this.addCells(0, 0, 'enemy');
-    this.setBoard();
-  }
 
+  /**
+   * Draws the cells within the BoardCell array.
+   *
+   * @private
+   * @param {BoardCell[]} cells
+   * @memberof EnemyCanvas
+   */
   private drawCells(cells: BoardCell[]): void {
     const ctx = this.state.ctx;
     cells.forEach(cell => {
@@ -122,6 +161,16 @@ export class EnemyCanvas extends React.Component<ICanvas, EnemyCanvasState> {
     });
   }
 
+  /**
+   * Generates the BoardCell array.
+   *
+   * @private
+   * @param {number} x
+   * @param {number} y
+   * @param {string} s
+   * @returns {BoardCell[]}
+   * @memberof EnemyCanvas
+   */
   private addCells(x: number, y: number, s: string): BoardCell[] {
     const narr: BoardCell[] = new Array(100);
     for (let i = 0; i < 10; i++) {
@@ -133,6 +182,16 @@ export class EnemyCanvas extends React.Component<ICanvas, EnemyCanvasState> {
     return narr;
   }
 
+  /**
+   * Toggles the cell depending on the if the cell is empty or not and updates the
+   * current move history depending on the cells status.
+   *
+   * @private
+   * @param {BoardCell[]} arr
+   * @param {number} x
+   * @param {number} y
+   * @memberof EnemyCanvas
+   */
   private toggleCell(arr: BoardCell[], x: number, y: number): void {
     arr.forEach(cell => {
       if (cell.contains(x, y)) {
@@ -175,6 +234,13 @@ export class EnemyCanvas extends React.Component<ICanvas, EnemyCanvasState> {
     });
   }
 
+  /**
+   * Import the board from the server and sets the board cells relative to the array
+   * received.
+   *
+   * @private
+   * @memberof EnemyCanvas
+   */
   private setBoard(): void {
     //Import the board from the server.
     for (let i = 0; i < this.tempBoard.length; i++) {
@@ -200,6 +266,15 @@ export class EnemyCanvas extends React.Component<ICanvas, EnemyCanvasState> {
     this.shipCount.set('Destroyer', 2);
   }
 
+  /**
+   * Creates a hover type effect over the given boardcell.
+   *
+   * @private
+   * @param {BoardCell[]} arr
+   * @param {number} x
+   * @param {number} y
+   * @memberof EnemyCanvas
+   */
   private hoverEffect(arr: BoardCell[], x: number, y: number): void {
     const ctx = this.state.ctx;
     arr.forEach(cell => {

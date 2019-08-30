@@ -2,7 +2,13 @@ import * as React from 'react';
 import * as d3 from 'd3';
 
 export interface IStatsProps {}
-
+/**
+ * TODO: Create a drop down box with this information within the player area, Currently not implemented
+ * 
+ *
+ * @class Stats
+ * @extends {React.Component<any, any>}
+ */
 export default class Stats extends React.Component<IStatsProps> {
   public render(): JSX.Element {
     return <div id="chart-test"></div>;

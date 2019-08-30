@@ -25,7 +25,8 @@ export interface ICanvas extends IGameProp {
 }
 
 export interface IPlayAreaProp {
-  Players: IPlayers;
+  player: string;
+  enemy: string;
 }
 
 export interface IPlayers {

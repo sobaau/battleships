@@ -1,9 +1,5 @@
 import * as React from 'react';
 
-export interface IAppProps {}
-
-export interface IAppState {}
-
 export default class StatusMessage extends React.Component<any, any> {
   public render(): JSX.Element {
     return (

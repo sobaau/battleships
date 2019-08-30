@@ -2,8 +2,6 @@ import * as React from 'react';
 import StatusMessage from './StatusMessage';
 import { IMoveListItem } from '../../interface/IGameProp';
 
-export interface IStatusBoxProps {}
-
 export default class StatusBox extends React.Component<any, any> {
   public render(): JSX.Element {
     const messages: IMoveListItem[] = this.props.messages.map((message:IMoveListItem, i:number) => {

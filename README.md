@@ -2,17 +2,19 @@
 ReactShips is a clone of the classic board game Battle Ships. The game starts out with each player placing
 their 5 ships on their own board. Each ship can only place in the vertical or horizontal direction, They
 cannot be placed diagonally or a mix of vertical or horizontal. Ships consist of the following sizes:
-|Order Placed|Ship|Size|
-|------------|----|----|
-|First       |Carrier|5|
-|Second      |BattleShips|4|
-|Third       |Cruiser|3|
-|Fourth      |Submarine|3|
-|Fifth       |Destroyer|2|
+| Order Placed | Ship        | Size |
+| ------------ | ----------- | ---- |
+| First        | Carrier     | 5    |
+| Second       | BattleShips | 4    |
+| Third        | Cruiser     | 3    |
+| Fourth       | Submarine   | 3    |
+| Fifth        | Destroyer   | 2    |
 
 After these ships are placed each player takes turn guessing which squares the other player has placed their
 ships. If a ship is hit a square will turn red and if its a miss the square will turn white. The first
 player to sink all the other players ships is the winner of the game.
+
+Currently hosted at : https://reactships.herokuapp.com
 
 By David Preston.
 

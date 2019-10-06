@@ -38,7 +38,6 @@ class PlayerDetails extends React.Component<PlayerDetailsProps, any> {
         <input
           type="text"
           className="room-input"
-          required
           name="roomID"
           onChange={this.handleChange}
           value={this.state.roomID}

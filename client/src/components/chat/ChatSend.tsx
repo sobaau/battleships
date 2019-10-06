@@ -29,7 +29,7 @@ export class ChatSend extends React.Component<any, any> {
   }
   handleSubmit(e: any): void {
     e.preventDefault();
-    this.props.onSend(this.state.chatInput);
-    this.setState({chatInput: ''})
+    this.props.onSend(this.state.chatInput, this.props.username);
+    this.setState({ chatInput: '' });
   }
 }

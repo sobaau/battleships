@@ -20,7 +20,7 @@ export default class App extends React.Component<any, AppState> {
     this.state = {
       login: false,
       playerName: 'Player',
-      enemyName: 'Test',
+      enemyName: 'No Enemy Ready',
     };
   }
 
@@ -29,13 +29,18 @@ export default class App extends React.Component<any, AppState> {
       return (
         <Router>
           <div>
-            <NaviBar />
+            <NaviBar roomid={this.state.roomID} />
             <Switch>
               <Route
                 path="/" //#TODO: Add dynamic route for the roomID
                 exact
                 render={(routeProps): any => (
-                  <PlayArea {...routeProps} player={this.state.playerName} enemy={this.state.enemyName} />
+                  <PlayArea
+                    {...routeProps}
+                    player={this.state.playerName}
+                    enemy={this.state.enemyName}
+                    roomid={this.state.roomID}
+                  />
                 )}
               />
               <Route path="/info" exact component={Info} />
@@ -62,14 +67,21 @@ export default class App extends React.Component<any, AppState> {
     this.setState({ playerName: name });
   };
 
-  getRoomID = (roomid: string): any => {
-    this.setState({ roomID: roomid });
+  getRoomID = async (id: string): Promise<any> => {
+    if (id.length < 1) {
+    } else {
+      this.setState({ roomID: id });
+    }
   };
   /*
   getEnemy = () =>{
 
   }*/
-
+  public componentDidMount(): void {
+    fetch('http://localhost:5005/gameID')
+      .then(req => req.json())
+      .then(id => this.setState({ roomID: id.id }));
+  }
   handleLogin = (b: boolean): void => {
     this.setState({ login: b });
   };

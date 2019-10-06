@@ -4,6 +4,7 @@ import { BoardCell } from '../../interface/BoardCell';
 import { ICanvas, IMoveListItem } from '../../interface/IGameProp';
 import { Ship } from '../../interface/Ship';
 import { GameStatus } from '../PlayArea';
+import io from 'socket.io-client';
 
 interface IGameState {
   GameStatus: GameStatus;
@@ -34,6 +35,9 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
   private height = 510;
   private width = 510;
   private canvasRef = React.createRef<HTMLCanvasElement>();
+  private exported = 0;
+  playerSocket: SocketIOClient.Socket;
+
   constructor(props: any) {
     super(props);
     this.state = {
@@ -54,7 +58,7 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
       clicks: 0,
     };
     this.ships = this.createShipList();
-    this.playerBoard = new Board('player');
+    this.playerBoard = new Board(this.props.GameState.PlayerName);
     this.playerCells = this.addCells(0, 0, 'player');
     this.ship = 0;
   }
@@ -76,12 +80,93 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
     const ctx = this.canvasRef.current.getContext('2d');
     this.setState({ ctx });
     this.startGame();
+    this.setSocket();
     this.setEvents();
     requestAnimationFrame(() => {
       this.update();
     });
   }
-
+  private setSocket(): void {
+    this.playerSocket = io('localhost:5005/play');
+    this.playerSocket.emit('join', this.props.roomID);
+    this.playerSocket.on('enemySendMove', (x: number, y: number, name: string) => {
+      if (name !== this.props.GameState.PlayerName) {
+        for (const cell of this.playerCells) {
+          if (cell.contains(x, y)) {
+            if (cell.part === 'Carrier') {
+              this.setState(prevState => {
+                const ShipParts = { ...prevState.ShipParts };
+                ShipParts.Carrier--;
+                return { ShipParts };
+              });
+              if (this.state.ShipParts.Carrier === 0) {
+                this.checkRemainingShips();
+              }
+            } else if (cell.part === 'Battleship') {
+              this.setState(prevState => {
+                const ShipParts = { ...prevState.ShipParts };
+                ShipParts.Battleship--;
+                return { ShipParts };
+              });
+              if (this.state.ShipParts.Battleship === 0) {
+                this.checkRemainingShips();
+              }
+            } else if (cell.part === 'Cruiser') {
+              this.setState(prevState => {
+                const ShipParts = { ...prevState.ShipParts };
+                ShipParts.Cruiser--;
+                return { ShipParts };
+              });
+              if (this.state.ShipParts.Cruiser === 0) {
+                this.checkRemainingShips();
+              }
+            } else if (cell.part === 'Submarine') {
+              this.setState(prevState => {
+                const ShipParts = { ...prevState.ShipParts };
+                ShipParts.Submarine--;
+                return { ShipParts };
+              });
+              if (this.state.ShipParts.Submarine === 0) {
+                this.checkRemainingShips();
+              }
+            } else if (cell.part === 'empty') {
+              cell.hit = true;
+              cell.c = 'white';
+              cell.part = 'empty'; // #TODO: Fix this up.
+              this.props.GameState.CurrentTurn = 'Player';
+              const move: IMoveListItem = {
+                Player: 'Enemy',
+                Move: 'Miss!',
+              };
+              this.props.updateMoves(move);
+              this.props.updateGameState(this.props.GameState);
+              break;
+            } else {
+              this.setState(prevState => {
+                const ShipParts = { ...prevState.ShipParts };
+                ShipParts.Destroyer--;
+                return { ShipParts };
+              });
+              if (this.state.ShipParts.Destroyer === 0) {
+                this.checkRemainingShips();
+              }
+            }
+            cell.hit = true;
+            cell.c = 'red';
+            cell.part = 'empty'; // #TODO: Fix this up.
+            this.props.GameState.CurrentTurn = 'Player';
+            const move: IMoveListItem = {
+              Player: 'Enemy',
+              Move: 'Hit!',
+            };
+            this.props.updateMoves(move);
+            this.props.updateGameState(this.props.GameState);
+          }
+        }
+      }
+    });
+  }
+  private checkHit(): void {}
   /**
    * Main drawloop. Resets the game if flagged and then calls the update functions
    * for the game.
@@ -91,13 +176,16 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
    */
   private update(): void {
     this.drawCells(this.playerCells);
-    if (this.props.GameState.ResP) {
-      this.startGame();
-      this.props.GameState.ResP = false;
-      this.props.updateGameState(this.props.GameState);
-    }
-    if (this.props.GameState.GameStatus === 1 && this.props.GameState.CurrentTurn === 'Enemy') {
-      this.playGame();
+    // if (this.props.GameState.ResP) {
+    //   this.startGame();
+    //   this.props.GameState.ResP = false;
+    //   this.props.updateGameState(this.props.GameState);
+    // }
+    if (this.props.GameState.GameStatus === 1) {
+      if (this.exported === 0) {
+        this.exportBoard();
+      }
+      //this.playGame();
     }
     if (this.state.GameStatus === 2) {
       // #TODO ENDGAME
@@ -121,7 +209,7 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
     this.shipCells = [];
     this.ship = 0;
     this.currentShip = this.ships[this.ship];
-    this.playerBoard = new Board('player');
+    this.playerBoard = new Board(this.props.GameState.PlayerName);
     this.playerCells = this.addCells(0, 0, 'player');
     this.props.GameState.CurrentShip = 'Carrier';
     this.props.GameState.GameStatus = GameStatus.Setup;
@@ -156,89 +244,6 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
       this.props.GameState.Winner = 'Enemy Wins!';
       this.props.GameState.GameStatus = GameStatus.GameOver;
       this.props.updateGameState(this.props.GameState);
-    }
-  }
-
-  /**
-   * Main gameloop with dummy AI. AI picks cells that haven't been
-   * selected at random
-   *
-   * @private
-   * @memberof PlayerCanvas
-   */
-  private playGame(): void {
-    const randomCell: number = Math.floor(Math.random() * (99 - 0 + 1)) + 0;
-    const cell = this.playerCells[randomCell];
-    if (cell.part !== 'empty' && !cell.hit) {
-      if (cell.part === 'Carrier') {
-        this.setState(prevState => {
-          const ShipParts = { ...prevState.ShipParts };
-          ShipParts.Carrier--;
-          return { ShipParts };
-        });
-        if (this.state.ShipParts.Carrier === 0) {
-          this.checkRemainingShips();
-        }
-      } else if (cell.part === 'Battleship') {
-        this.setState(prevState => {
-          const ShipParts = { ...prevState.ShipParts };
-          ShipParts.Battleship--;
-          return { ShipParts };
-        });
-        if (this.state.ShipParts.Battleship === 0) {
-          this.checkRemainingShips();
-        }
-      } else if (cell.part === 'Cruiser') {
-        this.setState(prevState => {
-          const ShipParts = { ...prevState.ShipParts };
-          ShipParts.Cruiser--;
-          return { ShipParts };
-        });
-        if (this.state.ShipParts.Cruiser === 0) {
-          this.checkRemainingShips();
-        }
-      } else if (cell.part === 'Submarine') {
-        this.setState(prevState => {
-          const ShipParts = { ...prevState.ShipParts };
-          ShipParts.Submarine--;
-          return { ShipParts };
-        });
-        if (this.state.ShipParts.Submarine === 0) {
-          this.checkRemainingShips();
-        }
-      } else {
-        this.setState(prevState => {
-          const ShipParts = { ...prevState.ShipParts };
-          ShipParts.Destroyer--;
-          return { ShipParts };
-        });
-        if (this.state.ShipParts.Destroyer === 0) {
-          this.checkRemainingShips();
-        }
-      }
-      this.playerCells[randomCell].hit = true;
-      this.playerCells[randomCell].c = 'red';
-      this.playerCells[randomCell].part = 'empty'; // #TODO: Fix this up.
-      this.props.GameState.CurrentTurn = 'Player';
-      const move: IMoveListItem = {
-        Player: 'Enemy',
-        Move: 'Hit!',
-      };
-      this.props.updateMoves(move);
-      this.props.updateGameState(this.props.GameState);
-    } else if (cell.part === 'empty' && !cell.hit) {
-      this.playerCells[randomCell].hit = true;
-      this.playerCells[randomCell].c = 'white';
-      this.playerCells[randomCell].part = 'empty'; // #TODO: Fix this up.
-      this.props.GameState.CurrentTurn = 'Player';
-      const move: IMoveListItem = {
-        Player: 'Enemy',
-        Move: 'Miss!',
-      };
-      this.props.updateMoves(move);
-      this.props.updateGameState(this.props.GameState);
-    } else {
-      this.playGame();
     }
   }
 
@@ -364,7 +369,7 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
         this.props.GameState.GameStatus = this.state.GameStatus;
         this.props.GameState.CurrentTurn = 'Player';
         this.props.updateGameState(this.props.GameState);
-        this.playerBoard = new Board('player');
+        this.playerBoard = new Board(this.props.GameState.PlayerName);
         this.playerCells.forEach(cell => {
           if (cell.part === 'empty') {
             this.playerBoard.board.push(0);
@@ -553,7 +558,10 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
    * @memberof PlayerCanvas
    */
   private exportBoard(): void {
-    //Export the players board to the server.
+    console.log('we in export');
+    console.log(this.playerBoard);
+    this.playerSocket.emit('playerBoard', this.playerBoard, this.props.roomID);
+    this.exported = 1;
   }
 
   /**

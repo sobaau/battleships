@@ -4,7 +4,7 @@ import '../../styles/status.scss';
 import StatusBox from './StatusBox';
 import { StatusTurn } from './StatusTurn';
 
-export class StatusArea extends React.Component<IGameProp, IGameProp> {
+export class StatusArea extends React.Component<any, any> {
   public render(): JSX.Element {
     if (this.props.GameState.GameStatus === 0) {
       return (

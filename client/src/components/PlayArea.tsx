@@ -4,7 +4,6 @@ import { EnemyCanvas } from './canvas/EnemyCanvas';
 import { PlayerCanvas } from './canvas/PlayerCanvas';
 import { StatusArea } from './StatusArea/StatusArea';
 import { Chat } from './chat/Chat';
-import io from 'socket.io-client';
 
 export enum GameStatus {
   Setup,
@@ -14,6 +13,8 @@ export enum GameStatus {
 
 export class PlayArea extends React.Component<IPlayAreaProp, IGameProp> {
   playSocket: SocketIOClient.Socket;
+  loaded = true;
+  test: any;
   constructor(props: any) {
     super(props);
     this.state = {
@@ -24,28 +25,56 @@ export class PlayArea extends React.Component<IPlayAreaProp, IGameProp> {
         Moves: [],
         GameStatus: GameStatus.Setup,
         Winner: null,
-        PlayerName: this.props.player,
-        EnemyName: this.props.enemy,
         EnemyShipsR: 5,
         PlayerShipsR: 5,
         SetupMessages: null,
       },
+      PlayerName: this.props.player,
+      getBoard: this.props.getBoard,
     };
   }
-
-  public componentDidMount(): any {
-    console.log('Mount');
-    this.playSocket = io('localhost:5005/play');
-    this.playSocket.emit('join', this.state.roomID);
-    this.playSocket.on('gameMessage', (statea: any) => {
-      console.log('Socket stuff');
-      console.log(statea);
-    });
+  public componentDidMount(): void {
+    if (this.props.getBoard) {
+      this.loaded = false;
+      this.getState();
+    }
+    this.setUpdate();
+    this.test = setInterval(() => this.setUpdate(), 5000);
   }
 
+  public setUpdate(): void {
+    if (this.props.getBoard === false && this.loaded == true) {
+      this.saveState();
+    }
+  }
   public componentWillUnmount(): void {
     this.playSocket.emit('disconnect');
   }
+  private saveState = async (): Promise<any> => {
+    const obj = { roomID: this.state.roomID, PlayerName: this.props.player, state: this.state };
+    const request = await fetch(`http://localhost:5005/api/gamestate/${this.state.roomID}`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(obj),
+    });
+    const json = await request.json();
+    console.log(json);
+  };
+
+  private getState = async (): Promise<any> => {
+    const request = await fetch(`http://localhost:5005/api/gamestate/${this.props.roomid}&${this.props.player}`);
+    const json = await request.json();
+    console.log(json.state);
+    this.setState({
+      GameState: json.state.GameState,
+    });
+    this.setState({ getBoard: false });
+    this.loaded = true;
+    console.log('Getboard');
+  };
 
   public render(): JSX.Element {
     let button;
@@ -69,24 +98,22 @@ export class PlayArea extends React.Component<IPlayAreaProp, IGameProp> {
           updateMoves={this.updateMoves}
           GameState={this.state.GameState}
           roomID={this.state.roomID}
-          socket={this.playSocket}
+          PlayerName={this.state.PlayerName}
+          getBoard={this.state.getBoard}
         />
         <PlayerCanvas
           updateGameState={this.updateGameState}
           updateMoves={this.updateMoves}
           GameState={this.state.GameState}
           roomID={this.state.roomID}
-          socket={this.playSocket}
+          PlayerName={this.state.PlayerName}
+          getBoard={this.state.getBoard}
         />
         <StatusArea GameState={this.state.GameState} roomID={this.props.roomid} />
 
         <div className="reset">{button}</div>
 
-        <Chat
-          username={this.state.GameState.PlayerName}
-          roomID={this.props.roomid}
-          enemyName={this.state.GameState.EnemyName}
-        />
+        <Chat username={this.props.player} roomID={this.props.roomid} />
       </div>
     );
   }
@@ -119,29 +146,10 @@ export class PlayArea extends React.Component<IPlayAreaProp, IGameProp> {
     });
   };
 
-  /**
-   * Flags the game to restart for the two player canvas's and then resets the
-   * state of the game.
-   *
-   * @private
-   * @memberof PlayArea
-   */
-  private restartGame = (): void => {
-    this.setState((prevState: any) => {
-      const GameState: IGameState = { ...prevState.GameState };
-      GameState.CurrentShip = null;
-      GameState.CurrentTurn = null;
-      GameState.Moves = [];
-      GameState.GameStatus = GameStatus.Setup;
-      GameState.Winner = null;
-      GameState.EnemyShipsR = 5;
-      GameState.PlayerShipsR = 5;
-      return { GameState };
-    });
-  };
   private readyAction = (): void => {
-    //console.log(JSON.stringify(this.state));
-    this.playSocket.emit('gameStep', this.state);
+    const s = !this.state.getBoard;
+    this.setState({ getBoard: s });
+    this.getState();
   };
 
   /**

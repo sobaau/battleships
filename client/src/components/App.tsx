@@ -12,6 +12,8 @@ interface AppState {
   playerName?: string;
   roomID?: string;
   enemyName?: string;
+  getBoard?: boolean;
+  loadGame?: boolean;
 }
 
 export default class App extends React.Component<any, AppState> {
@@ -32,7 +34,7 @@ export default class App extends React.Component<any, AppState> {
             <NaviBar roomid={this.state.roomID} />
             <Switch>
               <Route
-                path="/" //#TODO: Add dynamic route for the roomID
+                path="/"
                 exact
                 render={(routeProps): any => (
                   <PlayArea
@@ -40,6 +42,7 @@ export default class App extends React.Component<any, AppState> {
                     player={this.state.playerName}
                     enemy={this.state.enemyName}
                     roomid={this.state.roomID}
+                    getBoard={this.state.getBoard}
                   />
                 )}
               />
@@ -67,22 +70,17 @@ export default class App extends React.Component<any, AppState> {
     this.setState({ playerName: name });
   };
 
-  getRoomID = async (id: string): Promise<any> => {
+  getRoomID = (id: string): void => {
+    console.log('We here');
+    console.log(id);
     if (id.length < 1) {
     } else {
       this.setState({ roomID: id });
     }
   };
-  /*
-  getEnemy = () =>{
 
-  }*/
-  public componentDidMount(): void {
-    fetch('http://localhost:5005/gameID')
-      .then(req => req.json())
-      .then(id => this.setState({ roomID: id.id }));
-  }
-  handleLogin = (b: boolean): void => {
+  handleLogin = (b: boolean, g: boolean): void => {
     this.setState({ login: b });
+    this.setState({ getBoard: g });
   };
 }

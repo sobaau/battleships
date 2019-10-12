@@ -11,6 +11,8 @@ interface PlayerDetailsProps {
 interface PlayerDetailsState {
   playerName: string;
   roomID: string;
+  disableButton: boolean;
+  newGame: boolean;
 }
 
 class PlayerDetails extends React.Component<PlayerDetailsProps, any> {
@@ -19,11 +21,12 @@ class PlayerDetails extends React.Component<PlayerDetailsProps, any> {
     this.state = {
       playerName: '',
       roomID: '',
+      disableButton: false,
     };
   }
   public render(): JSX.Element {
     return (
-      <form className="player-details" onSubmit={this.handleSubmit}>
+      <form className="player-details">
         <PlayerHeader />
 
         <label>
@@ -42,19 +45,52 @@ class PlayerDetails extends React.Component<PlayerDetailsProps, any> {
           onChange={this.handleChange}
           value={this.state.roomID}
         />
-
-        <Button variant="outline-success" type="submit">
-          Submit
+        <Button variant="outline-success" type="submit" name="New" onClick={this.handleSubmit}>
+          New / Join Game
+        </Button>
+        <Button variant="outline-success" type="submit" name="Load" onClick={this.handleLoad}>
+          Load Game
         </Button>
       </form>
     );
   }
 
+  private handleLoad = (e: any): void => {
+    e.preventDefault();
+    if (this.state.disableButton) {
+      return;
+    }
+    console.log('Handle Load');
+    this.props.player(this.state.playerName);
+    if (this.state.roomID !== '') {
+      this.props.room(this.state.roomID);
+      this.props.handleLogin(true, true);
+    }
+    this.setState({ disableButton: true });
+  };
+
   private handleSubmit = (e: any): void => {
     e.preventDefault();
+    if (this.state.disableButton) {
+      return;
+    }
     this.props.player(this.state.playerName);
+    if (this.state.roomID !== '') {
+      this.props.room(this.state.roomID);
+      this.props.handleLogin(true, false);
+    } else {
+      this.setRoom();
+    }
+    this.setState({ disableButton: true });
+  };
+
+  private setRoom = async (): Promise<any> => {
+    const gameID = await fetch('http://localhost:5005/api/gameID');
+    const json = await gameID.json();
+    console.log(json);
+    this.setState({ roomID: json.id });
     this.props.room(this.state.roomID);
-    this.props.handleLogin(true);
+    this.props.handleLogin(true, false);
   };
 
   private handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {

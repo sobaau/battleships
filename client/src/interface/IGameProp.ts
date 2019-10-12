@@ -7,8 +7,6 @@ export interface IGameState {
   CurrentTurn: string;
   Moves: IMoveListItem[];
   GameStatus: number;
-  PlayerName: string;
-  EnemyName: string;
   Winner: string;
   EnemyShipsR: number;
   PlayerShipsR: number;
@@ -17,17 +15,21 @@ export interface IGameState {
 export interface IGameProp {
   roomID: string;
   GameState: IGameState;
+  PlayerName: string;
+  getBoard: boolean;
 }
 export interface ICanvas extends IGameProp {
   updateGameState?: any;
   updateMoves?: any;
-  socket: SocketIOClient.Socket;
+  PlayerName: string;
+  getBoard: boolean;
 }
 
 export interface IPlayAreaProp {
   player: string;
   enemy: string;
   roomid: string;
+  getBoard: boolean;
 }
 
 export interface IPlayers {

@@ -1,9 +1,9 @@
 import { Request, Response, Router } from 'express';
-import Board from '../../models/EnemyBoard';
+import Board from '../../models/PlayerBoard';
 
-export const EnemyRouter = Router();
+export const PlayerRouter = Router();
 
-EnemyRouter.get('/:gameID', async (req: Request, res: Response) => {
+PlayerRouter.get('/:gameID', async (req: Request, res: Response) => {
   try {
     const mid: number = req.params.gameID.indexOf('&');
     const id = req.params.gameID.slice(0, mid);
@@ -15,17 +15,19 @@ EnemyRouter.get('/:gameID', async (req: Request, res: Response) => {
   }
 });
 
-EnemyRouter.post('/:gameID', async (req: Request, res: Response) => {
+PlayerRouter.post('/:gameID', async (req: Request, res: Response) => {
   //console.log(req.body);
   const post = {
     roomID: req.params.gameID,
     player: req.body.player,
     boardCell: req.body.boardCell,
-    lastMoveResult: req.body.lastMoveResult,
-    enemyBoard: req.body.enemyBoard,
-    importBoard: req.body.importBoard,
-    shipCount: req.body.shipCount,
     state: req.body.state,
+    ship: req.body.ship,
+    playerBoard: req.body.playerBoard,
+    shipCells: req.body.shipCells,
+    ships: req.body.ships,
+    currentShip: req.body.currentShip,
+    exported: req.body.exported,
   };
   //console.log(post);
   try {

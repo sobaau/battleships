@@ -7,7 +7,8 @@ ChatRouter.get('/', async (req: Request, res: Response) => {
   try {
     const posts = await ChatHistory.find();
     res.json(posts);
-    console.log('Posted Chat');
+    console.log('Get Chat');
+    console.log(posts);
   } catch (err) {
     res.json({ message: err });
   }
@@ -19,8 +20,9 @@ ChatRouter.post('/', async (req: Request, res: Response) => {
     messages: req.body.messages,
   });
   try {
-    const savedPost = await post.save();
-    res.json(savedPost);
+    //const savedPost = await post.save();
+    res.json(req.body);
+    console.log(req.body);
   } catch (err) {
     res.json({ message: err });
   }

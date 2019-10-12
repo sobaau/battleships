@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import * as gamePost from './controllers/gamestate';
 import * as chatPost from './controllers/chat';
 import * as enemyPost from './controllers/enemyboard';
+import * as playerPost from './controllers/playerboard';
 import SocketIO from 'socket.io';
 import path from 'path';
 import bodyParser from 'body-parser';
@@ -49,7 +50,7 @@ gsp.on('connection', (socket: any) => {
   });
   socket.on('playerBoard', (board: any, room: any) => {
     gsp.to(room).emit('setEnemyBoard', board);
-    console.log(board);
+    //console.log(board);
   });
   socket.on('enemyMove', (room: any, x: number, y: number, name: string) => {
     gsp.to(room).emit('enemySendMove', x, y, name);
@@ -61,12 +62,15 @@ gsp.on('connection', (socket: any) => {
 
 app.use(cors());
 app.use(bodyParser.json());
-app.use('/gamestate', gamePost.GameRouter);
-app.use('/chat', chatPost.ChatRouter);
-app.use('/enemyPost', enemyPost.EnemyRouter);
+app.use('/api/gamestate', gamePost.GameRouter);
+app.use('/api/chat', chatPost.ChatRouter);
+app.use('/api/enemyBoard', enemyPost.EnemyRouter);
+app.use('/api/playerBoard', playerPost.PlayerRouter);
 app.use(express.static(path.join(__dirname, '/../client/build')));
 //app.get('/', (req: any, res: any) => res.sendFile(__dirname + '/../client/build/index.html'));
-app.get('/gameID', gameID.game);
+app.get('/api/gameID', gameID.game);
+mongoose.set('useFindAndModify', false);
+
 mongoose.connect(
   'mongodb+srv://rsuser:6kTBc9bPcXUUXAN@reactships-k0rxr.mongodb.net/test?retryWrites=true&w=majority',
   { useNewUrlParser: true, useUnifiedTopology: true },

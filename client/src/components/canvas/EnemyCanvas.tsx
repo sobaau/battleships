@@ -14,6 +14,7 @@ interface EnemyCanvasState {
     height: number;
   };
   ctx?: CanvasRenderingContext2D;
+  getBoard: boolean;
 }
 
 export class EnemyCanvas extends React.Component<ICanvas, EnemyCanvasState> {
@@ -21,10 +22,11 @@ export class EnemyCanvas extends React.Component<ICanvas, EnemyCanvasState> {
   public lastMoveResult: string;
   private enemyCells: BoardCell[];
   private importBoard: number[];
-  private shipCount: Map<string, number>;
+  private shipCount: Record<string, number>;
   private height = 510;
   private width = 510;
   private canvasRef = React.createRef<HTMLCanvasElement>();
+  private b = true;
   enemySocket: SocketIOClient.Socket;
 
   constructor(props: any) {
@@ -38,13 +40,13 @@ export class EnemyCanvas extends React.Component<ICanvas, EnemyCanvasState> {
         height: this.height,
       },
       ctx: undefined,
+      getBoard: props.getBoard,
     };
-    this.shipCount = new Map();
+    this.shipCount = { Carrier: 5, Battleship: 5, Cruiser: 3, Submarine: 3, Destroyer: 2 };
     // this.enemyBoard = new Board('enemy');
     this.enemyCells = new Array(100);
     this.enemyCells = this.addCells(0, 0, 'enemy');
     this.lastMoveResult = ' ';
-    this.shipCount.clear();
   }
 
   public render(): JSX.Element {
@@ -62,6 +64,9 @@ export class EnemyCanvas extends React.Component<ICanvas, EnemyCanvasState> {
    */
   public componentDidMount(): void {
     const ctx = this.canvasRef.current.getContext('2d');
+    if (this.props.getBoard) {
+      this.getBoard();
+    }
     this.setSocket();
     this.setState({ ctx });
     this.startGame();
@@ -70,14 +75,61 @@ export class EnemyCanvas extends React.Component<ICanvas, EnemyCanvasState> {
       this.update();
     });
   }
+  public componentDidUpdate(): void {
+    this.saveBoard();
+  }
+  private saveBoard = async (): Promise<any> => {
+    const obj = {
+      roomID: this.props.roomID,
+      player: this.props.PlayerName,
+      boardCell: this.enemyCells,
+      lastMoveResult: this.lastMoveResult,
+      enemyBoard: this.enemyBoard,
+      importBoard: this.importBoard,
+      shipCount: this.shipCount,
+      state: this.state,
+    };
+    const response = await fetch(`http://localhost:5005/api/enemyBoard/${this.props.roomID}`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(obj),
+    });
+    const json = await response.json();
+    console.log(json);
+  };
+
+  private getBoard = async (): Promise<any> => {
+    const request = await fetch(`http://localhost:5005/api/enemyBoard/${this.props.roomID}&${this.props.PlayerName}`);
+    const json = await request.json();
+    console.log(json);
+    for (let i = 0; i < this.enemyCells.length; i++) {
+      this.enemyCells[i].x = json.boardCell[i].x;
+      this.enemyCells[i].y = json.boardCell[i].y;
+      this.enemyCells[i].h = json.boardCell[i].h;
+      this.enemyCells[i].w = json.boardCell[i].w;
+      this.enemyCells[i].c = json.boardCell[i].c;
+      this.enemyCells[i].part = json.boardCell[i].part;
+      this.enemyCells[i].owner = json.boardCell[i].owner;
+      this.enemyCells[i].hover = json.boardCell[i].hover;
+      this.enemyCells[i].hit = json.boardCell[i].hit;
+    }
+    this.setState({
+      GameStatus: json.state.GameStatus,
+      CurrentTurn: json.state.CurrentTurn,
+      ShipsRemaining: json.state.ShipsRemaining,
+    });
+    this.setState({ getBoard: false });
+    this.b = false;
+  };
   private setSocket(): void {
     this.enemySocket = io('localhost:5005/play');
     this.enemySocket.emit('join', this.props.roomID);
     this.enemySocket.on('setEnemyBoard', (board: any) => {
-      console.log('Socket stuff');
       console.log(board);
-      if (this.props.GameState.PlayerName !== board.boardName) {
-        console.log('setting enemyboard');
+      if (this.props.PlayerName !== board.boardName) {
         this.setupBoard(board.board);
       }
     });
@@ -96,12 +148,6 @@ export class EnemyCanvas extends React.Component<ICanvas, EnemyCanvasState> {
    * @memberof EnemyCanvas
    */
   private update(): void {
-    // if (this.props.GameState.ResE) {
-    //   this.startGame();
-    //   this.props.GameState.ResE = false;
-    //   this.props.GameState.GameStatus = GameStatus.Setup;
-    //   this.props.updateGameState(this.props.GameState);
-    // }
     this.drawCells(this.enemyCells);
     this.checkStatus();
     requestAnimationFrame(() => {
@@ -149,11 +195,9 @@ export class EnemyCanvas extends React.Component<ICanvas, EnemyCanvasState> {
     canvas.addEventListener('click', event => {
       const x = event.clientX - canvas.getBoundingClientRect().left;
       const y = event.clientY - canvas.getBoundingClientRect().top;
-      if (
-        this.props.GameState.GameStatus === 1 &&
-        this.props.GameState.CurrentTurn !== this.props.GameState.PlayerName
-      ) {
-        this.enemySocket.emit('enemyMove', this.props.roomID, x, y, this.props.GameState.PlayerName);
+      this.saveBoard();
+      if (this.props.GameState.GameStatus === 1 && this.props.GameState.CurrentTurn !== this.props.PlayerName) {
+        this.enemySocket.emit('enemyMove', this.props.roomID, x, y, this.props.PlayerName);
         this.toggleCell(this.enemyCells, x, y);
       }
     });
@@ -223,8 +267,8 @@ export class EnemyCanvas extends React.Component<ICanvas, EnemyCanvasState> {
             Move: `Hit!`,
           };
           cell.hit = true;
-          this.shipCount.set(cell.part, this.shipCount.get(cell.part) - 1);
-          if (this.shipCount.get(cell.part) === 0) {
+          this.shipCount[cell.part] = this.shipCount[cell.part] - 1;
+          if (this.shipCount[cell.part] === 0) {
             move.Player = 'Player';
             move.Move = `${cell.part} was sunk`;
             this.props.GameState.EnemyShipsR--;
@@ -237,7 +281,7 @@ export class EnemyCanvas extends React.Component<ICanvas, EnemyCanvasState> {
             }
           }
           this.props.updateMoves(move);
-          this.props.GameState.CurrentTurn = this.props.GameState.PlayerName;
+          this.props.GameState.CurrentTurn = this.props.PlayerName;
           this.props.updateGameState(this.props.GameState);
         } else if (cell.part === 'empty' && !cell.hit) {
           cell.c = 'white';
@@ -247,7 +291,7 @@ export class EnemyCanvas extends React.Component<ICanvas, EnemyCanvasState> {
           };
           this.props.updateMoves(move);
           cell.hit = true;
-          this.props.GameState.CurrentTurn = this.props.GameState.PlayerName;
+          this.props.GameState.CurrentTurn = this.props.PlayerName;
           this.props.updateGameState(this.props.GameState);
         }
       }
@@ -279,12 +323,7 @@ export class EnemyCanvas extends React.Component<ICanvas, EnemyCanvasState> {
         this.enemyCells[i].part = 'Destroyer';
       }
     }
-    this.shipCount = new Map();
-    this.shipCount.set('Carrier', 5);
-    this.shipCount.set('Battleship', 4);
-    this.shipCount.set('Cruiser', 3);
-    this.shipCount.set('Submarine', 3);
-    this.shipCount.set('Destroyer', 2);
+    this.shipCount = { Carrier: 5, Battleship: 5, Cruiser: 3, Submarine: 3, Destroyer: 2 };
 
     console.log(this.enemyCells);
   }

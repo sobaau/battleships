@@ -88,7 +88,7 @@ export class EnemyCanvas extends React.Component<ICanvas, EnemyCanvasState> {
       shipCount: this.shipCount,
       state: this.state,
     };
-    const response = await fetch(`https://https://reactships.herokuapp.com/api/enemyBoard/${this.props.roomID}`, {
+    const response = await fetch(`https://reactships.herokuapp.com/api/enemyBoard/${this.props.roomID}`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -101,7 +101,9 @@ export class EnemyCanvas extends React.Component<ICanvas, EnemyCanvasState> {
   };
 
   private getBoard = async (): Promise<any> => {
-    const request = await fetch(`https://reactships.herokuapp.com/api/enemyBoard/${this.props.roomID}&${this.props.PlayerName}`);
+    const request = await fetch(
+      `https://reactships.herokuapp.com/api/enemyBoard/${this.props.roomID}&${this.props.PlayerName}`,
+    );
     const json = await request.json();
     for (let i = 0; i < this.enemyCells.length; i++) {
       this.enemyCells[i].x = json.boardCell[i].x;
@@ -319,7 +321,6 @@ export class EnemyCanvas extends React.Component<ICanvas, EnemyCanvasState> {
       }
     }
     this.shipCount = { Carrier: 5, Battleship: 5, Cruiser: 3, Submarine: 3, Destroyer: 2 };
-
   }
 
   /**

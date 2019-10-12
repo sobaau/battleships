@@ -88,7 +88,7 @@ export class EnemyCanvas extends React.Component<ICanvas, EnemyCanvasState> {
       shipCount: this.shipCount,
       state: this.state,
     };
-    const response = await fetch(`http://http://reactships.herokuapp.com/api/enemyBoard/${this.props.roomID}`, {
+    const response = await fetch(`https://https://reactships.herokuapp.com/api/enemyBoard/${this.props.roomID}`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -101,7 +101,7 @@ export class EnemyCanvas extends React.Component<ICanvas, EnemyCanvasState> {
   };
 
   private getBoard = async (): Promise<any> => {
-    const request = await fetch(`http://reactships.herokuapp.com//api/enemyBoard/${this.props.roomID}&${this.props.PlayerName}`);
+    const request = await fetch(`https://reactships.herokuapp.com//api/enemyBoard/${this.props.roomID}&${this.props.PlayerName}`);
     const json = await request.json();
     for (let i = 0; i < this.enemyCells.length; i++) {
       this.enemyCells[i].x = json.boardCell[i].x;
@@ -123,7 +123,7 @@ export class EnemyCanvas extends React.Component<ICanvas, EnemyCanvasState> {
     this.b = false;
   };
   private setSocket(): void {
-    this.enemySocket = io('http://reactships.herokuapp.com/play');
+    this.enemySocket = io('https://reactships.herokuapp.com/play');
     this.enemySocket.emit('join', this.props.roomID);
     this.enemySocket.on('setEnemyBoard', (board: any) => {
       if (this.props.PlayerName !== board.boardName) {

@@ -35,3 +35,6 @@
 }
 
 http://localhost:5005
+
+    "build": "concurrently \"npm run compile\" \"cd client && npm run build\""
+    "compile": "tsc -p .",

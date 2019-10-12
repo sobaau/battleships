@@ -7,8 +7,7 @@
     "start": "node dist/server.js",
     "client": "npm build --prefix client",
     "dev": "nodemon src/server.ts",
-    "compile": "tsc -p .",
-    "build": "concurrently \"npm run compile\" \"cd client && npm run build\""
+    "build": "tsc -p ."
   },
   "author": "",
   "license": "ISC",

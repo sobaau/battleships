@@ -123,7 +123,7 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
   };
   private getBoard = async (): Promise<any> => {
     const response = await fetch(
-      `https://https://reactships.herokuapp.com/api/playerBoard/${this.props.roomID}&${this.props.PlayerName}`,
+      `https://reactships.herokuapp.com/api/playerBoard/${this.props.roomID}&${this.props.PlayerName}`,
     );
     const json = await response.json();
     for (let i = 0; i < this.playerCells.length; i++) {

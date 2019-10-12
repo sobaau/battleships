@@ -24,7 +24,7 @@ export class Chat extends React.Component<any, any> {
     };
   }
   public componentDidMount(): void {
-    this.socket = io('localhost:5005');
+    this.socket = io('http://reactships.herokuapp.com');
     this.socket.emit('join', this.props.username, this.props.roomID);
     this.socket.on('message', (message: any, user: any) => {
       this.updateMessages(message, user);

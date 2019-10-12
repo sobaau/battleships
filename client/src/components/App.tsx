@@ -71,8 +71,6 @@ export default class App extends React.Component<any, AppState> {
   };
 
   getRoomID = (id: string): void => {
-    console.log('We here');
-    console.log(id);
     if (id.length < 1) {
     } else {
       this.setState({ roomID: id });

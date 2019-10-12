@@ -84,7 +84,7 @@ class PlayerDetails extends React.Component<PlayerDetailsProps, any> {
   };
 
   private setRoom = async (): Promise<any> => {
-    const gameID = await fetch('http://localhost:5005/api/gameID');
+    const gameID = await fetch('http://reactships.herokuapp.com/api/gameID');
     const json = await gameID.json();
     this.setState({ roomID: json.id });
     this.props.room(this.state.roomID);

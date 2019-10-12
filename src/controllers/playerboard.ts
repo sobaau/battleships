@@ -1,5 +1,5 @@
 import { Request, Response, Router } from 'express';
-import Board from '../../models/PlayerBoard';
+import Board from '../models/PlayerBoard';
 
 export const PlayerRouter = Router();
 
@@ -16,7 +16,6 @@ PlayerRouter.get('/:gameID', async (req: Request, res: Response) => {
 });
 
 PlayerRouter.post('/:gameID', async (req: Request, res: Response) => {
-  //console.log(req.body);
   const post = {
     roomID: req.params.gameID,
     player: req.body.player,
@@ -29,7 +28,6 @@ PlayerRouter.post('/:gameID', async (req: Request, res: Response) => {
     currentShip: req.body.currentShip,
     exported: req.body.exported,
   };
-  //console.log(post);
   try {
     const savedPost = await Board.findOneAndUpdate({ roomID: req.params.gameID, player: req.body.player }, post, {
       upsert: true,

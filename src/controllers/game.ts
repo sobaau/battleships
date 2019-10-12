@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
 const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+/* Credit to William Billingsley for the random generator
+*/
 
 export const game = (req: Request, resp: Response) => {
-  const id = req.query.id;
-
-  const randomId = () => {
+  const randomId = (): any => {
     let code = '';
     for (let i = 0; i < 8; i++) {
       const n = Math.floor(Math.random() * chars.length);
@@ -12,21 +12,5 @@ export const game = (req: Request, resp: Response) => {
     }
     return code;
   };
-
-  if (id !== undefined) {
-    resp.send('The id was ' + id);
-  } else {
-    resp.send({ id: randomId() });
-    //resp.redirect('/?gameId=' + randomId());
-  }
+  resp.send({ id: randomId() });
 };
-
-export class GameStatus {
-  gameState: any;
-  boardOne: any;
-  boardTwo: any;
-  roomID: string;
-  constructor(room: string) {
-    this.roomID = room;
-  }
-}

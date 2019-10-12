@@ -152,7 +152,6 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
       this.shipCells[i].hover = json.shipCells[i].hover;
       this.shipCells[i].hit = json.shipCells[i].hit;
     }
-    console.log(json.shipCells);
     this.currentShip = json.currentShip;
     this.ship = json.ship;
     this.setState(prevState => {
@@ -170,8 +169,6 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
     });
     this.saveB = true;
     this.updateCurrentShip();
-    console.log(this.currentShip);
-    console.log(this.state);
     this.setState({ getBoard: false });
     this.b = false;
   };
@@ -270,7 +267,6 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
       }
     }
     if (this.state.GameStatus === 2) {
-      // #TODO ENDGAME
     }
     requestAnimationFrame(() => {
       this.update();
@@ -343,7 +339,6 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
       if (this.props.GameState.GameStatus === 0) {
         this.toggleCell(this.playerCells, x, y);
         this.checkValid();
-        console.log('Ship in e ' + this.currentShip.size);
         this.saveBoard();
         if (this.state.clicks === this.currentShip.size) {
           this.finalCheck();
@@ -447,9 +442,6 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
    * @memberof PlayerCanvas
    */
   private checkShipTurn(): void {
-    console.log('In current ship');
-    console.log(this.shipCells.length);
-    console.log(this.currentShip.size);
     if (this.shipCells.length === this.currentShip.size) {
       if (this.currentShip.name === 'Destroyer') {
         this.setState({ GameStatus: GameStatus.Playing });
@@ -473,7 +465,6 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
           }
         });
       } else {
-        console.log('do we get here????');
         this.setState({ clicks: 0 });
         this.ship++;
         this.currentShip = this.ships[this.ship];
@@ -506,7 +497,6 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
         }
       });
     } else {
-      // #TODO: Can probably remove this old code.
       arr.forEach(cell => {
         if (cell.contains(x, y) && this.state.clicks !== this.currentShip.size && cell.part === 'empty') {
           this.shipCells.push(cell);
@@ -640,22 +630,13 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
   }
 
   /**
-   * TODO
+   * Exports the current board to the server
    *
    * @private
    * @memberof PlayerCanvas
    */
   private exportBoard(): void {
-    console.log(this.playerBoard);
     this.playerSocket.emit('playerBoard', this.playerBoard, this.props.roomID);
     this.exported = 1;
   }
-
-  /**
-   * TODO
-   *
-   * @private
-   * @memberof PlayerCanvas
-   */
-  private endGame(): void {}
 }

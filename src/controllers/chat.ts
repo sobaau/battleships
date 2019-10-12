@@ -1,5 +1,5 @@
 import { Request, Response, Router } from 'express';
-import ChatHistory from '../../models/ChatHistory';
+import ChatHistory from '../models/ChatHistory';
 
 export const ChatRouter = Router();
 
@@ -7,22 +7,18 @@ ChatRouter.get('/', async (req: Request, res: Response) => {
   try {
     const posts = await ChatHistory.find();
     res.json(posts);
-    console.log('Get Chat');
-    console.log(posts);
   } catch (err) {
     res.json({ message: err });
   }
 });
 
 ChatRouter.post('/', async (req: Request, res: Response) => {
-  console.log(req.body);
   const post = new ChatHistory({
     messages: req.body.messages,
   });
   try {
-    //const savedPost = await post.save();
+    const savedPost = await post.save();
     res.json(req.body);
-    console.log(req.body);
   } catch (err) {
     res.json({ message: err });
   }

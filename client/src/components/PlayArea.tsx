@@ -73,24 +73,9 @@ export class PlayArea extends React.Component<IPlayAreaProp, IGameProp> {
     });
     this.setState({ getBoard: false });
     this.loaded = true;
-    console.log('Getboard');
   };
 
   public render(): JSX.Element {
-    let button;
-    if (this.state.GameState.GameStatus === 1) {
-      button = (
-        <button className="btn btn-primary" id="Reset" disabled={false} onClick={this.readyAction}>
-          Ready
-        </button>
-      );
-    } else {
-      button = (
-        <button className="btn btn-primary" id="Reset" disabled={false} onClick={this.readyAction}>
-          Ready
-        </button>
-      );
-    }
     return (
       <div className="play-area">
         <EnemyCanvas
@@ -110,8 +95,6 @@ export class PlayArea extends React.Component<IPlayAreaProp, IGameProp> {
           getBoard={this.state.getBoard}
         />
         <StatusArea GameState={this.state.GameState} roomID={this.props.roomid} />
-
-        <div className="reset">{button}</div>
 
         <Chat username={this.props.player} roomID={this.props.roomid} />
       </div>
@@ -145,19 +128,4 @@ export class PlayArea extends React.Component<IPlayAreaProp, IGameProp> {
       return { GameState };
     });
   };
-
-  private readyAction = (): void => {
-    const s = !this.state.getBoard;
-    this.setState({ getBoard: s });
-    this.getState();
-  };
-
-  /**
-   * Load the game state from the server if this is a brand new game.
-   * #TODO:
-   *
-   * @private
-   * @memberof PlayArea
-   */
-  private loadGame = (): void => {};
 }

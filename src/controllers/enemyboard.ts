@@ -1,5 +1,5 @@
 import { Request, Response, Router } from 'express';
-import Board from '../../models/EnemyBoard';
+import Board from '../models/EnemyBoard';
 
 export const EnemyRouter = Router();
 
@@ -16,7 +16,6 @@ EnemyRouter.get('/:gameID', async (req: Request, res: Response) => {
 });
 
 EnemyRouter.post('/:gameID', async (req: Request, res: Response) => {
-  //console.log(req.body);
   const post = {
     roomID: req.params.gameID,
     player: req.body.player,
@@ -27,7 +26,6 @@ EnemyRouter.post('/:gameID', async (req: Request, res: Response) => {
     shipCount: req.body.shipCount,
     state: req.body.state,
   };
-  //console.log(post);
   try {
     const savedPost = await Board.findOneAndUpdate({ roomID: req.params.gameID, player: req.body.player }, post, {
       upsert: true,

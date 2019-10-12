@@ -43,7 +43,6 @@ export class EnemyCanvas extends React.Component<ICanvas, EnemyCanvasState> {
       getBoard: props.getBoard,
     };
     this.shipCount = { Carrier: 5, Battleship: 5, Cruiser: 3, Submarine: 3, Destroyer: 2 };
-    // this.enemyBoard = new Board('enemy');
     this.enemyCells = new Array(100);
     this.enemyCells = this.addCells(0, 0, 'enemy');
     this.lastMoveResult = ' ';
@@ -104,7 +103,6 @@ export class EnemyCanvas extends React.Component<ICanvas, EnemyCanvasState> {
   private getBoard = async (): Promise<any> => {
     const request = await fetch(`http://localhost:5005/api/enemyBoard/${this.props.roomID}&${this.props.PlayerName}`);
     const json = await request.json();
-    console.log(json);
     for (let i = 0; i < this.enemyCells.length; i++) {
       this.enemyCells[i].x = json.boardCell[i].x;
       this.enemyCells[i].y = json.boardCell[i].y;
@@ -128,7 +126,6 @@ export class EnemyCanvas extends React.Component<ICanvas, EnemyCanvasState> {
     this.enemySocket = io('localhost:5005/play');
     this.enemySocket.emit('join', this.props.roomID);
     this.enemySocket.on('setEnemyBoard', (board: any) => {
-      console.log(board);
       if (this.props.PlayerName !== board.boardName) {
         this.setupBoard(board.board);
       }
@@ -137,7 +134,6 @@ export class EnemyCanvas extends React.Component<ICanvas, EnemyCanvasState> {
 
   private setupBoard(board: number[]): void {
     this.importBoard = board;
-    console.log(board);
     this.setBoard();
   }
   /**
@@ -307,7 +303,6 @@ export class EnemyCanvas extends React.Component<ICanvas, EnemyCanvasState> {
    */
   private setBoard(): void {
     //Import the board from the server.
-    console.log('in setboard' + this.importBoard);
     for (let i = 0; i < this.importBoard.length; i++) {
       if (this.importBoard[i] === 0) {
         this.enemyCells[i].part = 'empty';
@@ -325,7 +320,6 @@ export class EnemyCanvas extends React.Component<ICanvas, EnemyCanvasState> {
     }
     this.shipCount = { Carrier: 5, Battleship: 5, Cruiser: 3, Submarine: 3, Destroyer: 2 };
 
-    console.log(this.enemyCells);
   }
 
   /**

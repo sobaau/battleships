@@ -1,24 +1,24 @@
 const activeUsers: any[] = [];
+const Rooms: any[] = [];
 
 export const addUser = ({ id, username, roomid }: any): any => {
-  const existingUser = activeUsers.find(user => user.roomid === roomid && user.username === username);
-
-  if (!username || !roomid) return { error: 'Username and room are required.' };
-  if (existingUser) return { error: 'Username is taken.' };
-
   const user = { id, username, roomid };
-
   activeUsers.push(user);
-
   return { user };
 };
+export const addRoom = ({ roomid }: any): any => {
+  const room = { roomid };
 
-export const removeUser = (id: any): void => {
-  const index = activeUsers.findIndex(user => user.id === id);
-
-  if (index !== -1) return activeUsers.splice(index, 1)[0];
+  if (Rooms.includes(room.roomid)) {
+    return;
+  }
+  Rooms.push(room);
 };
 
-export const getUser = (id: any): any => activeUsers.find(user => user.id === id);
+export const GetUsers = (): number => {
+  return activeUsers.length;
+};
 
-export const getUsersInRoom = (room: any): any => activeUsers.filter(user => user.room === room);
+export const GetGames = (): number => {
+  return activeUsers.length;
+};

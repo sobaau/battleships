@@ -60,7 +60,6 @@ class PlayerDetails extends React.Component<PlayerDetailsProps, any> {
     if (this.state.disableButton) {
       return;
     }
-    console.log('Handle Load');
     this.props.player(this.state.playerName);
     if (this.state.roomID !== '') {
       this.props.room(this.state.roomID);
@@ -87,7 +86,6 @@ class PlayerDetails extends React.Component<PlayerDetailsProps, any> {
   private setRoom = async (): Promise<any> => {
     const gameID = await fetch('http://localhost:5005/api/gameID');
     const json = await gameID.json();
-    console.log(json);
     this.setState({ roomID: json.id });
     this.props.room(this.state.roomID);
     this.props.handleLogin(true, false);

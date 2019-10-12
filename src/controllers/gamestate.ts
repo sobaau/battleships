@@ -1,5 +1,5 @@
 import { Request, Response, Router } from 'express';
-import GameSchema from '../../models/GameState';
+import GameSchema from '../models/GameState';
 
 export const GameRouter = Router();
 
@@ -16,8 +16,6 @@ GameRouter.get('/:gameID', async (req: Request, res: Response) => {
 });
 
 GameRouter.post('/:gameID', async (req: Request, res: Response) => {
-  console.log(req.body);
-  console.log('Post');
   const post = {
     roomID: req.params.gameID,
     player: req.body.PlayerName,

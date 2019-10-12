@@ -27,8 +27,6 @@ export class Chat extends React.Component<any, any> {
     this.socket = io('localhost:5005');
     this.socket.emit('join', this.props.username, this.props.roomID);
     this.socket.on('message', (message: any, user: any) => {
-      console.log(message);
-      console.log(user);
       this.updateMessages(message, user);
     });
   }
@@ -51,7 +49,6 @@ export class Chat extends React.Component<any, any> {
   };
 
   private updateMessages = (message: any, user: any): void => {
-    console.log(message);
     let meCheck = false;
     const messages = this.state.messages;
     if (user === this.props.username) {

@@ -52,7 +52,7 @@ export class PlayArea extends React.Component<IPlayAreaProp, IGameProp> {
   }
   private saveState = async (): Promise<any> => {
     const obj = { roomID: this.state.roomID, PlayerName: this.props.player, state: this.state };
-    const request = await fetch(`https://reactships.herokuapp.com//api/gamestate/${this.state.roomID}`, {
+    const request = await fetch(`https://reactships.herokuapp.com/api/gamestate/${this.state.roomID}`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -65,7 +65,7 @@ export class PlayArea extends React.Component<IPlayAreaProp, IGameProp> {
   };
 
   private getState = async (): Promise<any> => {
-    const request = await fetch(`https://reactships.herokuapp.com//api/gamestate/${this.props.roomid}&${this.props.player}`);
+    const request = await fetch(`https://reactships.herokuapp.com/api/gamestate/${this.props.roomid}&${this.props.player}`);
     const json = await request.json();
     console.log(json.state);
     this.setState({

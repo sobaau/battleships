@@ -110,7 +110,7 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
       shipCells: this.shipCells,
       exported: this.exported,
     };
-    const response = await fetch(`https://reactships.herokuapp.com/api/playerBoard/${this.props.roomID}`, {
+    const response = await fetch(`http://localhost:5005/api/playerBoard/${this.props.roomID}`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -123,7 +123,7 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
   };
   private getBoard = async (): Promise<any> => {
     const response = await fetch(
-      `https://reactships.herokuapp.com/api/playerBoard/${this.props.roomID}&${this.props.PlayerName}`,
+      `http://localhost:5005/api/playerBoard/${this.props.roomID}&${this.props.PlayerName}`,
     );
     const json = await response.json();
     for (let i = 0; i < this.playerCells.length; i++) {
@@ -175,7 +175,7 @@ export class PlayerCanvas extends React.Component<ICanvas, IGameState> {
     this.b = false;
   };
   private setSocket(): void {
-    this.playerSocket = io('https://reactships.herokuapp.com/play');
+    this.playerSocket = io('http://localhost:5005/play');
     this.playerSocket.emit('join', this.props.roomID);
     this.playerSocket.on('enemySendMove', (x: number, y: number, name: string) => {
       if (name !== this.props.PlayerName) {

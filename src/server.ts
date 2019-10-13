@@ -54,7 +54,6 @@ gsp.on('connection', (socket: any) => {
     gsp.to(room).emit('enemySendMove', x, y, name);
   });
   socket.on('hit', () => {
-    console.log('hit');
     statPost.statHit();
   });
   socket.on('miss', () => {
@@ -73,7 +72,6 @@ app.use('/api/enemyBoard', enemyPost.EnemyRouter);
 app.use('/api/playerBoard', playerPost.PlayerRouter);
 app.use('/api/stats', statPost.StatRouter);
 app.use(express.static(path.join(__dirname, '/../client/build')));
-//app.get('/', (req: any, res: any) => res.sendFile(__dirname + '/../client/build/index.html'));
 app.get('/api/gameID', gameID.game);
 mongoose.set('useFindAndModify', false);
 

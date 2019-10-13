@@ -16,6 +16,8 @@ EnemyRouter.get('/:gameID', async (req: Request, res: Response) => {
   }
 });
 
+/** Updates the data on the server OR creates a new entry if it's not on the server */
+
 EnemyRouter.post('/:gameID', async (req: Request, res: Response) => {
   const post = {
     roomID: req.params.gameID,

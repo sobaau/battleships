@@ -7,7 +7,7 @@
     "start": "node dist/server.js",
     "client": "npm build --prefix client",
     "dev": "nodemon src/server.ts",
-    "build": "tsc -p ."
+    "build": "npm install && tsc -p . && cd client && npm install && npm run build"
   },
   "author": "",
   "license": "ISC",

@@ -28,7 +28,7 @@ export default class Stats extends React.Component<IStatsProps> {
     this.getStats();
   }
   getStats = async (): Promise<any> => {
-    const response = await fetch('https://reactships.herokuapp.com/api/stats');
+    const response = await fetch('http://localhost:5005/api/stats');
     const json = await response.json();
     this.stats = json;
     console.log(this.stats);
@@ -39,12 +39,17 @@ export default class Stats extends React.Component<IStatsProps> {
     return i * (width / data) + width / data / 2;
   };
 
+  /**
+   * Draws stats provided by the server
+   *
+   * @memberof Stats
+   */
   drawChart(): void {
     const data = [];
     data.push({ name: 'Users', stats: this.stats.ActiveUsers });
     data.push({ name: 'Hits', stats: this.stats.Hits });
     data.push({ name: 'Misses', stats: this.stats.Misses });
-    const width = 600;
+    const width = 300;
     const height = 100;
     const svg = d3
       .select('#chart-test')
@@ -52,6 +57,7 @@ export default class Stats extends React.Component<IStatsProps> {
       .attr('width', width)
       .attr('height', height);
 
+    /** Start drawing the barchart using d3 */
     svg
       .selectAll('rect')
       .data(data)
@@ -74,6 +80,8 @@ export default class Stats extends React.Component<IStatsProps> {
       .selectAll('text')
       .data(data)
       .enter();
+
+    /** Labels for the bar graph, Sits on top/close to the top of the bar graph */
     labels
       .append('text')
       .text(stats => {

@@ -5,6 +5,15 @@
 /.pnp
 .pnp.js
 /client/node_modules
+/client/build
+/client/.vscode
+/client/.eslintrc.js
+/client/.prettierrc.js
+/client/360.code-workspace
+/client/todo.txt
+.eslintrc.js
+.prettierrc.js
+360_server.code-workspace
 # testing
 /coverage
 /dst

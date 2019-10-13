@@ -1,10 +1,7 @@
 /** This controller counts the current active users */
 
 const activeUsers: any[] = [];
-activeUsers.push({ id: 'test' });
-activeUsers.push({ id: 'test' });
-activeUsers.push({ id: 'test' });
-activeUsers.push({ id: 'test' });
+
 const Rooms: any[] = [];
 
 export const addUser = ({ id, username, roomid }: any): any => {

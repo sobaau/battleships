@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { IGameProp } from '../../interface/IGameProp';
 import '../../styles/status.scss';
 import StatusBox from './StatusBox';
 import { StatusTurn } from './StatusTurn';

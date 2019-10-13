@@ -2,10 +2,11 @@ import * as React from 'react';
 import { PlayArea } from './PlayArea';
 import NaviBar from './NaviBar';
 import PlayerDetails from './PlayerDetails/PlayerDetails';
-import Info from './Info/Info';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { Navbar } from 'react-bootstrap';
+import { Navbar} from 'react-bootstrap';
 import Stats from './Stats/Stats';
+import { animated } from 'react-spring';
+import { Transition } from 'react-spring/renderprops';
 
 interface AppState {
   login: boolean;
@@ -14,6 +15,7 @@ interface AppState {
   enemyName?: string;
   getBoard?: boolean;
   loadGame?: boolean;
+  showStats: boolean;
 }
 
 export default class App extends React.Component<any, AppState> {
@@ -23,6 +25,7 @@ export default class App extends React.Component<any, AppState> {
       login: false,
       playerName: 'Player',
       enemyName: 'No Enemy Ready',
+      showStats: false,
     };
   }
 
@@ -31,7 +34,23 @@ export default class App extends React.Component<any, AppState> {
       return (
         <Router>
           <div>
-            <NaviBar roomid={this.state.roomID} />
+            <NaviBar roomid={this.state.roomID} stats={this.showStats} />
+            <Transition
+              native
+              items={this.state.showStats}
+              from={{ opacity: 0 }}
+              enter={{ opacity: 1 }}
+              leave={{ opacity: 0 }}
+            >
+              {(show): any =>
+                show &&
+                ((props): any => (
+                  <animated.div style={props}>
+                    <Stats />
+                  </animated.div>
+                ))
+              }
+            </Transition>
             <Switch>
               <Route
                 path="/"
@@ -46,8 +65,6 @@ export default class App extends React.Component<any, AppState> {
                   />
                 )}
               />
-              <Route path="/info" exact component={Info} />
-              <Route path="/stats" exact component={Stats} />
             </Switch>
           </div>
         </Router>
@@ -76,6 +93,7 @@ export default class App extends React.Component<any, AppState> {
       this.setState({ roomID: id });
     }
   };
+  showStats = (): void => this.setState({ showStats: !this.state.showStats });
 
   handleLogin = (b: boolean, g: boolean): void => {
     this.setState({ login: b });

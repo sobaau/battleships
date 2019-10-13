@@ -1,8 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-/* Credit to William Billingsley for the random generator
-*/
+/**  Credit to William Billingsley for the random generator
+ * https://gitlab.une.edu.au/cosc360in2018/express-typescript-seed/blob/master/app/controllers/welcome.controller.ts
+ */
 exports.game = (req, resp) => {
     const randomId = () => {
         let code = '';

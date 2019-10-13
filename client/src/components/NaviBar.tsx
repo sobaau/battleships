@@ -15,15 +15,7 @@ export default class NaviBar extends React.Component<any> {
             <LinkContainer to="/">
               <Nav.Link>Home</Nav.Link>
             </LinkContainer>
-            {/** 
-            #TODO: Implement these as drop downs within the game area.
-            <LinkContainer to="/info">
-              <Nav.Link>Info</Nav.Link>
-            </LinkContainer>
-            <LinkContainer to="/stats">
-              <Nav.Link>Stats</Nav.Link>
-            </LinkContainer>
-            */}
+            <Nav.Link onClick={this.props.stats}>Stats</Nav.Link>
             <div className="navbar-text">Room ID: {this.props.roomid}</div>
           </Nav>
         </Navbar.Collapse>

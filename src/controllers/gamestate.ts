@@ -2,6 +2,7 @@ import { Request, Response, Router } from 'express';
 import GameSchema from '../models/GameState';
 
 export const GameRouter = Router();
+/** Gets and saves data relating to the game State */
 
 GameRouter.get('/:gameID', async (req: Request, res: Response) => {
   try {

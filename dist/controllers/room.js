@@ -1,6 +1,11 @@
 "use strict";
+/** This controller counts the current active users */
 Object.defineProperty(exports, "__esModule", { value: true });
 const activeUsers = [];
+activeUsers.push({ id: 'test' });
+activeUsers.push({ id: 'test' });
+activeUsers.push({ id: 'test' });
+activeUsers.push({ id: 'test' });
 const Rooms = [];
 exports.addUser = ({ id, username, roomid }) => {
     const user = { id, username, roomid };

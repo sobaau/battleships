@@ -19,6 +19,8 @@ const io = SocketIO(httpApp);
 
 const port = process.env.PORT || 5005;
 
+/** Using Socket IO to send chat messages between the two clients */
+
 io.on('connect', (socket: any) => {
   socket.on('join', (name: any, room: any) => {
     socket.join(room);
@@ -35,6 +37,7 @@ io.on('connect', (socket: any) => {
 
 const gsp = io.of('/play');
 
+/** Using Socket IO to send game messages between the two clients */
 gsp.on('connection', (socket: any) => {
   socket.on('join', (roomid: any) => {
     socket.join(roomid);
@@ -50,11 +53,20 @@ gsp.on('connection', (socket: any) => {
   socket.on('enemyMove', (room: any, x: number, y: number, name: string) => {
     gsp.to(room).emit('enemySendMove', x, y, name);
   });
+  socket.on('hit', () => {
+    console.log('hit');
+    statPost.statHit();
+  });
+  socket.on('miss', () => {
+    statPost.statMiss();
+  });
   socket.on('disconnect', () => {});
 });
 
 app.use(cors());
 app.use(bodyParser.json());
+
+/** Custom routes */
 app.use('/api/gamestate', gamePost.GameRouter);
 app.use('/api/chat', chatPost.ChatRouter);
 app.use('/api/enemyBoard', enemyPost.EnemyRouter);
@@ -65,6 +77,7 @@ app.use(express.static(path.join(__dirname, '/../client/build')));
 app.get('/api/gameID', gameID.game);
 mongoose.set('useFindAndModify', false);
 
+/** DB connection to atlas */
 mongoose.connect(
   'mongodb+srv://rsuser:6kTBc9bPcXUUXAN@reactships-k0rxr.mongodb.net/test?retryWrites=true&w=majority',
   { useNewUrlParser: true, useUnifiedTopology: true },

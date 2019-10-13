@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const PlayerBoard_1 = __importDefault(require("../models/PlayerBoard"));
 exports.PlayerRouter = express_1.Router();
+/** Gets and saves data relating to the player canvas */
 exports.PlayerRouter.get('/:gameID', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const mid = req.params.gameID.indexOf('&');

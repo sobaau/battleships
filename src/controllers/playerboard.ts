@@ -3,6 +3,8 @@ import Board from '../models/PlayerBoard';
 
 export const PlayerRouter = Router();
 
+/** Gets and saves data relating to the player canvas */
+
 PlayerRouter.get('/:gameID', async (req: Request, res: Response) => {
   try {
     const mid: number = req.params.gameID.indexOf('&');

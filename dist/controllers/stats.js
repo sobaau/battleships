@@ -12,11 +12,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const room_1 = require("./room");
 exports.StatRouter = express_1.Router();
+const moveStats = { Hits: 0, Misses: 0 };
+/** Sends Hits, misses and player count to the client */
 exports.StatRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const obj = {
             ActiveUsers: room_1.GetUsers(),
-            ActiveGames: room_1.GetGames(),
+            Hits: moveStats.Hits,
+            Misses: moveStats.Misses,
         };
         res.json(obj);
     }
@@ -24,3 +27,10 @@ exports.StatRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, func
         res.json({ message: err });
     }
 }));
+exports.statHit = () => {
+    moveStats.Hits = moveStats.Hits + 1;
+    console.log(moveStats);
+};
+exports.statMiss = () => {
+    moveStats.Misses = moveStats.Misses + 1;
+};

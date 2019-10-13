@@ -43,7 +43,7 @@ export class PlayArea extends React.Component<IPlayAreaProp, IGameProp> {
   }
 
   public setUpdate(): void {
-    if (this.props.getBoard === false && this.loaded == true) {
+    if (this.props.getBoard === false && this.loaded === true) {
       this.saveState();
     }
   }

@@ -2,38 +2,104 @@ import * as React from 'react';
 import * as d3 from 'd3';
 
 export interface IStatsProps {}
+interface stats {
+  ActiveUsers: number;
+  Hits: number;
+  Misses: number;
+}
 /**
- * TODO: Create a drop down box with this information within the player area, Currently not implemented
- * 
+ * Stats drop down box with stats regarding to the games ActiveUsers, Hits and Misses.
+ *
  *
  * @class Stats
  * @extends {React.Component<any, any>}
  */
+
 export default class Stats extends React.Component<IStatsProps> {
+  stats: stats = {
+    ActiveUsers: 0,
+    Hits: 0,
+    Misses: 0,
+  };
   public render(): JSX.Element {
-    return <div id="chart-test"></div>;
+    return <div id="chart-test" className="chart-test"></div>;
   }
   componentDidMount(): void {
-    this.drawChart();
+    this.getStats();
   }
-  drawChart(): void {
-    const data = [12, 5, 6, 6, 9, 10];
+  getStats = async (): Promise<any> => {
+    const response = await fetch('https://reactships.herokuapp.com/api/stats');
+    const json = await response.json();
+    this.stats = json;
+    console.log(this.stats);
+    this.drawChart();
+  };
 
+  xLocation = (d: any, i: any, width: number, data: number): number => {
+    return i * (width / data) + width / data / 2;
+  };
+
+  drawChart(): void {
+    const data = [];
+    data.push({ name: 'Users', stats: this.stats.ActiveUsers });
+    data.push({ name: 'Hits', stats: this.stats.Hits });
+    data.push({ name: 'Misses', stats: this.stats.Misses });
+    const width = 600;
+    const height = 100;
     const svg = d3
       .select('#chart-test')
       .append('svg')
-      .attr('width', 700)
-      .attr('height', 300);
+      .attr('width', width)
+      .attr('height', height);
 
     svg
       .selectAll('rect')
       .data(data)
       .enter()
       .append('rect')
-      .attr('x', (d, i) => i * 70)
-      .attr('y', (d, i) => 300 - 10 * d)
-      .attr('width', 25)
-      .attr('height', (d, i) => d * 10)
-      .attr('fill', 'green');
+      .attr('x', (d, i) => {
+        return i * (width / data.length);
+      })
+      .attr('y', d => {
+        return height - d.stats * 4;
+      })
+      .attr('width', width / data.length - 1)
+      .attr('height', d => {
+        return d.stats * 4;
+      })
+      .attr('fill', d => {
+        return `rgb(10, 0, ${d.stats * 10})`;
+      });
+    const labels = svg
+      .selectAll('text')
+      .data(data)
+      .enter();
+    labels
+      .append('text')
+      .text(stats => {
+        return stats.stats;
+      })
+      .attr('text-anchor', 'middle')
+      .attr('x', (stats, i) => this.xLocation(stats, i, width, data.length))
+      .attr('y', stats => {
+        return height - stats.stats * 4 + 14;
+      })
+      .attr('font-family', 'sans-serif')
+      .attr('font-size', '11px')
+      .attr('fill', 'white');
+    labels
+      .append('text')
+      .text(stats => {
+        return stats.name;
+      })
+      .attr('text-anchor', 'middle')
+      .attr('x', (stats, i) => this.xLocation(stats, i, width, data.length))
+
+      .attr('y', stats => {
+        return height - 16 - stats.stats * 4 + 14;
+      })
+      .attr('font-family', 'sans-serif')
+      .attr('font-size', '11px')
+      .attr('fill', 'white');
   }
 }

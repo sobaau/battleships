@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const EnemyBoard_1 = __importDefault(require("../models/EnemyBoard"));
 exports.EnemyRouter = express_1.Router();
+/** Gets and saves data relating to the enemy canvas */
 exports.EnemyRouter.get('/:gameID', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const mid = req.params.gameID.indexOf('&');

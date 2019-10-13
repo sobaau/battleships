@@ -2,6 +2,7 @@ import { Request, Response, Router } from 'express';
 import Board from '../models/EnemyBoard';
 
 export const EnemyRouter = Router();
+/** Gets and saves data relating to the enemy canvas */
 
 EnemyRouter.get('/:gameID', async (req: Request, res: Response) => {
   try {

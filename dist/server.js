@@ -28,6 +28,7 @@ const app = express_1.default();
 const httpApp = new http_1.default.Server(app);
 const io = socket_io_1.default(httpApp);
 const port = process.env.PORT || 5005;
+/** Using Socket IO to send chat messages between the two clients */
 io.on('connect', (socket) => {
     socket.on('join', (name, room) => {
         socket.join(room);
@@ -41,6 +42,7 @@ io.on('connect', (socket) => {
     socket.on('disconnect', () => { });
 });
 const gsp = io.of('/play');
+/** Using Socket IO to send game messages between the two clients */
 gsp.on('connection', (socket) => {
     socket.on('join', (roomid) => {
         socket.join(roomid);
@@ -55,10 +57,18 @@ gsp.on('connection', (socket) => {
     socket.on('enemyMove', (room, x, y, name) => {
         gsp.to(room).emit('enemySendMove', x, y, name);
     });
+    socket.on('hit', () => {
+        console.log('hit');
+        statPost.statHit();
+    });
+    socket.on('miss', () => {
+        statPost.statMiss();
+    });
     socket.on('disconnect', () => { });
 });
 app.use(cors_1.default());
 app.use(body_parser_1.default.json());
+/** Custom routes */
 app.use('/api/gamestate', gamePost.GameRouter);
 app.use('/api/chat', chatPost.ChatRouter);
 app.use('/api/enemyBoard', enemyPost.EnemyRouter);
@@ -68,6 +78,7 @@ app.use(express_1.default.static(path_1.default.join(__dirname, '/../client/buil
 //app.get('/', (req: any, res: any) => res.sendFile(__dirname + '/../client/build/index.html'));
 app.get('/api/gameID', gameID.game);
 mongoose_1.default.set('useFindAndModify', false);
+/** DB connection to atlas */
 mongoose_1.default.connect('mongodb+srv://rsuser:6kTBc9bPcXUUXAN@reactships-k0rxr.mongodb.net/test?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true }, () => console.log('Connected to DB'));
 app.set('port', port);
 httpApp.listen(port, () => console.log('Server Running on port ' + port));

@@ -295,7 +295,13 @@ export class EnemyCanvas extends React.Component<ICanvas, EnemyCanvasState> {
       }
     });
   }
-
+  private sendStats(m: string): void {
+    if (m === 'Hit') {
+      this.enemySocket.emit('hit');
+    } else {
+      this.enemySocket.emit('miss');
+    }
+  }
   /**
    * Import the board from the server and sets the board cells relative to the array
    * received.

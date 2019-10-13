@@ -16,7 +16,7 @@
 360_server.code-workspace
 # testing
 /coverage
-/dst
+/dist
 # production
 /build
 

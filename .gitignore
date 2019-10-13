@@ -11,6 +11,7 @@
 /client/.prettierrc.js
 /client/360.code-workspace
 /client/todo.txt
+/client/.idea
 .eslintrc.js
 .prettierrc.js
 360_server.code-workspace
